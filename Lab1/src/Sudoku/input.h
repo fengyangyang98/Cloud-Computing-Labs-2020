@@ -1,4 +1,7 @@
-#include <string>
+#ifndef _INPUT_H_
+#define _INPUT_H_
+
+
 #include "global.h"
 
 // store the file content in buffer for the solver to read them one by one
@@ -9,3 +12,5 @@ void ReadController();
 
 // each file read by a thread 
 void ReadThread(FILE filename);
+
+#endif
