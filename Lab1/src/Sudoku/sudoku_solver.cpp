@@ -41,3 +41,7 @@ void SudokuSolver(string& board, int index) {
     }
 }
 
+void SudokuSolverThread(string board) {
+    SudokuSolver(board, 0);
+}
+

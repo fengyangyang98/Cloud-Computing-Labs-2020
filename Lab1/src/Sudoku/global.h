@@ -2,7 +2,14 @@
 #define _GLOBAL_H_
 
 #include <string>
+#include <stack>
+#include <semaphore.h>
+#include <thread>
+
 using std::string;
+using std::stack;
+using std::thread;
+
 
 // the length of the board
 #define BOARD_LEN 9
@@ -10,13 +17,22 @@ using std::string;
 #define SUB_BOARD_LEN 3
 
 
-#define PROBLEM_BUFFER_LEN 100
-#define RESULT_BUFFER_LEN 100
+#define PROBLEM_BUFFER_LEN 3
+#define RESULT_BUFFER_LEN 3
 
-extern string resultBuffer[RESULT_BUFFER_LEN];
+
 
 // store the file content in buffer for the solver to read them one by one
-extern string problemBuffer[PROBLEM_BUFFER_LEN];
+extern stack<string> problemBuffer;
+
+// store the solution in order
+extern stack<string> resultBuffer;
+
+// semi
+extern sem_t empty;
+extern sem_t full;
+extern sem_t mutex;
+
 
 
 #endif
