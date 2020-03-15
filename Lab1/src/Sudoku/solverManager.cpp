@@ -5,20 +5,23 @@
 
 #include <string.h>
 #include <pthread.h>
+#include <signal.h>
+#include <future>
+#include <queue>
+#include <semaphore.h>
+
+sem_t resultBufferEmpty;
+sem_t resultBufferFull;
+sem_t resultBufferMutex;
+
+std::queue<std::future<std::string>> resultBuffer; 
 
 
-threadCB tcb[MAX_THREAD_NUMBER];
-board bcb[MAX_THREAD_NUMBER];
-pthread_t * prevThread;
-
-int initCB()
+void resultSemInit()
 {
-    int rc = 0;
-    for(int i = 0; i < MAX_THREAD_NUMBER; i++)
-    {
-        bcb[i].tcb = & tcb[i];
-    }
-    return rc;
+    sem_init(&resultBufferEmpty,0, RESULT_BUFFER_LEN);
+    sem_init(&resultBufferFull,0,0);
+    sem_init(&resultBufferMutex,0,1);
 }
 
 void * solveManager(void * arg)
@@ -27,23 +30,29 @@ void * solveManager(void * arg)
     {
         // get the answer from the problem buffer
         std::string problem = problemReader();
+        sem_wait(&resultBufferEmpty);
+        sem_wait(&resultBufferMutex);
 
-        // get a new thread to solve the problem
-        int threadCBIndex = 0;
-        while(1)
-        {
-            if(tcb[threadCBIndex].status == idle) {
-                bcb[threadCBIndex].prevThread = prevThread;
-                bcb[threadCBIndex].problem = problem;
-                bcb[threadCBIndex].prevThread = &(tcb[threadCBIndex].t);
-                tcb[threadCBIndex].status = running;
-                
-                pthread_create(&tcb[threadCBIndex].t, NULL, solverThread, bcb);
-                break;
-            }
+        resultBuffer.push(std::async(std::launch::async, solverThread, problem));
 
-            threadCBIndex = (threadCBIndex + 1) % MAX_THREAD_NUMBER;
-        }
+        sem_post(&resultBufferMutex);
+        sem_post(&resultBufferFull);
     }
 
+}
+
+void * answerPrinter(void * arg)
+{
+    while(1)
+    {
+        sem_wait(&resultBufferFull);
+        sem_wait(&resultBufferMutex);
+
+        resultBuffer.front().wait();
+        printf("%s\n", resultBuffer.front().get().c_str());
+        resultBuffer.pop();
+
+        sem_post(&resultBufferMutex);
+        sem_post(&resultBufferEmpty);
+    }
 }

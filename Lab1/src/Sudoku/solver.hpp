@@ -1,6 +1,9 @@
 #ifndef SOLVER_HPP
 #define SOLBER_HPP
 
-void * solverThread(void * args);
+#include <string>
+
+// void * solverThread(void * args);
+std::string solverThread(std::string problem);
 
 #endif

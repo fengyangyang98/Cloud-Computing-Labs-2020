@@ -4,6 +4,7 @@
 #include <pthread.h>
 
 void * solveManager(void * arg);
-int initCB();
+void resultSemInit();
+void * answerPrinter(void * arg);
 
 #endif
