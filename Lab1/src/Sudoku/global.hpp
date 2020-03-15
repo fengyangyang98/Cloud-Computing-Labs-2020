@@ -11,11 +11,6 @@
 #include <semaphore.h>
 #include <pthread.h>
 
-// some extern
-
-
-// type
-
 
 // some basic number
 #define BOARD_HEIGHT    9
