@@ -19,7 +19,8 @@
 
 #define PROBLEM_BUFFER_LEN 10
 #define FILENAME_BUFFER_LEN 10
-#define MAX_THREAD_NUMBER 10
+#define RESULT_BUFFER_LEN 10
+#define MAX_THREAD_NUMBER 3
 
 
 // sem_t for the read & write problem
@@ -37,21 +38,8 @@ extern sem_t filenameBufferMutex;
 struct board
 {
     std::string problem;
-    pthread_t * prevThread;
-    struct threadCB * tcb;
 };
 
-enum threadStatus
-{
-    idle,
-    running
-};
-
-struct threadCB
-{
-    threadStatus status = idle;
-    pthread_t t;
-};
 
 // some buffer
 extern std::queue<std::string> problemBuffer;

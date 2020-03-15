@@ -1,11 +1,12 @@
 /*
-The basic algorithm code is from the [link](https://github.com/CynricFeng/CloudComputingLabs).
+The basic algorithm code is from the [link](https://github.com/1989chenguo/CloudComputingLabs).
 */
 
 #include "solver.hpp"
 #include "global.hpp"
 #include <string>
 #include <assert.h>
+#include <unistd.h>
 
 struct Node;
 typedef Node Column;
@@ -262,31 +263,26 @@ struct Dance
         nnew->col = old;
     }
 
-    void get_answer(){
+    std::string get_answer(){
+        std::string answer = "";
         for(int i = 0; i < BOARD_SCALE; i++) {
-            printf("%d", inout_[i]);
+            answer += inout_[i] + '0';
         }
-        printf("\n");
+        return answer;
     }
 };
 
-void * solverThread(void * args)
-{
-    board * b = (board *) args;
-    pthread_t * prev = b->prevThread;
 
-    Dance d(b->problem);
+std::string solverThread(std::string problem)
+{
+    Dance d(problem);
     int rc = d.solve();
-    
-    if(prev) {
-        pthread_join(*prev, NULL);
-    }    
+    // printf("%s\n", d.get_answer().c_str());
 
     if(!rc) {
-        printf("No answer \n");
+        return "No answer";
     } else {
-        d.get_answer();
+        return d.get_answer();
     }
-
-    b->tcb->status = idle;
+    
 }

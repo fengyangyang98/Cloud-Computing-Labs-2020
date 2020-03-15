@@ -38,6 +38,7 @@ std::string problemReader() {
     problemBuffer.pop();
 
     // printf("Read: %s\n", tem.c_str());
+    // printf("%d\n", problemBuffer.size());
 
     sem_post(&problemBufferMutex);
     sem_post(&problemBufferEmpty);
