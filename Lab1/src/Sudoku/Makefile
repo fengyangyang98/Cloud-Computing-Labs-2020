@@ -1,24 +1,24 @@
-OBJS = sudoku_solver.o main.o io.o thread_solver.o
+OBJS = fileManager.o solver.o solverManager.o main.o
 CPP = g++
 FLAGES = -std=c++11 -O2 
 
 sudoku: $(OBJS)
 	$(CPP) -o $@ $(OBJS) -lpthread
 
-main.o: main.cpp main.h
+main.o: main.cpp 
 	$(CPP) $(FLAGES) -c $^ -lpthread
 
-sudoku_solver.o: sudoku_solver.cpp sudoku_solver.h
+fileManager.o: fileManager.cpp fileManager.hpp
 	$(CPP) $(FLAGES) -c $^ -lpthread
 
-io.o: io.cpp io.h
+solver.o: solver.cpp solver.hpp
 	$(CPP) $(FLAGES) -c $^ -lpthread
 
-thread_solver.o: thread_solver.cpp thread_solver.h
+solverManager.o: solverManager.cpp solverManager.hpp
 	$(CPP) $(FLAGES) -c $^ -lpthread
 
 PHONY: clean
 
 clean:
-	rm *.o *.h.gch sudoku
+	rm *.o *.hpp.gch sudoku
 	clear
