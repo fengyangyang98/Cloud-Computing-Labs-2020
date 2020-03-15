@@ -1,0 +1,4 @@
+*.o
+*test*
+*.hpp.gch
+# .vscode
