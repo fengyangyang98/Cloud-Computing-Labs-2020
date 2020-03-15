@@ -17,10 +17,11 @@
 #define BOARD_WIDTH     9
 #define BOARD_SCALE     BOARD_HEIGHT * BOARD_WIDTH
 
-#define PROBLEM_BUFFER_LEN 10
-#define FILENAME_BUFFER_LEN 10
-#define RESULT_BUFFER_LEN 10
-#define MAX_THREAD_NUMBER 3
+extern int PROBLEM_BUFFER_LEN;
+extern int FILENAME_BUFFER_LEN;
+extern int RESULT_BUFFER_LEN;
+extern bool OUTPUT;
+
 
 
 // sem_t for the read & write problem

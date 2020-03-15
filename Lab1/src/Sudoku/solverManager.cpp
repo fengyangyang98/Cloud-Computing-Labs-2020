@@ -10,6 +10,11 @@
 #include <queue>
 #include <semaphore.h>
 
+extern int PROBLEM_BUFFER_LEN;
+extern int FILENAME_BUFFER_LEN;
+extern int RESULT_BUFFER_LEN;
+extern bool OUTPUT;
+
 sem_t resultBufferEmpty;
 sem_t resultBufferFull;
 sem_t resultBufferMutex;
@@ -33,7 +38,10 @@ void * solveManager(void * arg)
         sem_wait(&resultBufferEmpty);
         sem_wait(&resultBufferMutex);
 
-        resultBuffer.push(std::async(std::launch::async, solverThread, problem));
+        if(OUTPUT)
+            resultBuffer.push(std::async(std::launch::async, solverThread, problem));
+        else
+            std::async(std::launch::async, solverThread, problem);
 
         sem_post(&resultBufferMutex);
         sem_post(&resultBufferFull);

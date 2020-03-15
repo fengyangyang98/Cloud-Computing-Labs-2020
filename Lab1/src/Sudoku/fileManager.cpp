@@ -5,6 +5,11 @@
 
 #include "global.hpp"
 
+extern int PROBLEM_BUFFER_LEN;
+extern int FILENAME_BUFFER_LEN;
+extern int RESULT_BUFFER_LEN;
+extern bool OUTPUT;
+
 sem_t problemBufferEmpty;
 sem_t problemBufferFull;
 sem_t problemBufferMutex;

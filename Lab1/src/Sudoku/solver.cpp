@@ -8,6 +8,11 @@ The basic algorithm code is from the [link](https://github.com/1989chenguo/Cloud
 #include <assert.h>
 #include <unistd.h>
 
+extern int PROBLEM_BUFFER_LEN;
+extern int FILENAME_BUFFER_LEN;
+extern int RESULT_BUFFER_LEN;
+extern bool OUTPUT;
+
 struct Node;
 typedef Node Column;
 struct Node
