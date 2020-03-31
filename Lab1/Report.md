@@ -45,7 +45,7 @@
 | :--: | :----------------------------------------: | :---------------------------------: | :------------------: |
 | syy  | Ubuntu 18.04 bionic [Ubuntu on Windows 10] | Intel Core i7-7700HQ @ 8x 2.801 GHz | 7841 MiB / 12149 MiB |
 | feng |            Ubuntu 18.04 bionic             |  Intel Xeon Gold 6161 @ 2x 2.2 Hz   | 1297 MiB / 3944 MiB  |
-| fgru |            Ubuntu 16.04 xenial             |   Intel Core i7-8550U CPU @ 4 GHz   | 2013 MiB / 7768 MiB  |
+| lab |            Ubuntu 16.04 xenial             |   Intel Core i7-8550U CPU @ 4 GHz   | 2013 MiB / 7768 MiB  |
 | fgru |            Ubuntu 18.04 bionic             | Intel Core i7-7500U @ 4x 2.904 GHz  | 1537 MiB / 6071 MiB  |
 | jjx  |            Ubuntu 18.04 bionic             |   Intel Core i5-7200U @ 2.712 GHz   |  969 MiB / 1894 MiB  |
 
