@@ -1,0 +1,11 @@
+*.o
+*.hpp.gch
+*.sudoku
+*.vscode
+*.result
+*.test
+*.out
+test*.log
+*.diff
+*result*
+syy_test1.log
