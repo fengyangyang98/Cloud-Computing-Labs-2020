@@ -2,7 +2,7 @@ OBJS = fileManager.o solver.o solverManager.o main.o
 CPP = g++
 FLAGES = -std=c++11 -O2 
 
-sudoku: $(OBJS)
+sudoku_solve: $(OBJS)
 	$(CPP) -o $@ $(OBJS) -lpthread
 
 main.o: main.cpp 
