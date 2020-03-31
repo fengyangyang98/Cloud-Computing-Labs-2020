@@ -20,4 +20,4 @@ solverManager.o: solverManager.cpp solverManager.hpp
 PHONY: clean
 
 clean:
-	rm *.o *.hpp.gch sudoku
+	rm *.o *.hpp.gch sudoku_solve
