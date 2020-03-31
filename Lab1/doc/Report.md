@@ -1,59 +1,58 @@
-# <center> lab 1 Sudoku </center>
+# Lab 1 Performance Report
 
-##### <center>[2019_nCoV_killers](../../README.md)</center>
+*2019_nCoV_killers* 
 
 ## 实验内容
 
 实现一个可以解决数独问题的程序，实验分为basic和advanced难度。
 
-## 成果
+### 问题描述
+
+多线程编程是高性能编程的技术之一，实验 1 将针对数独求解问题比较多线
+程与单线程的性能差异、同一功能不同代码实现的性能差异以及多线程在不同硬
+件环境下的性能差异。 
+
+### 我们的工作
 
 已经实现 advanced 级别，并且验证完毕，详细见正确性验证的部分。
 
-## 输入输出
+### 算法
 
-### 输入
+选择的是dance-link算法。在后面的结果对比和分析全部使用dancing link。
+
+### 输入输出
+
+#### 输入
 
 1. 在程序运行时输入测试文件名
 2. 可以输入多个文件名，输入时机随意
 3. 可以输入任意大小的文件
 4. 使用 ctrl-d 结束文件输入，当结果计算完成之后会自动退出程序。
 
-### 输出
+#### 输出
 
 默认情况下输出到屏幕
 
-## 算法
 
-选择的是dance-link算法。在后面的结果对比和分析全部使用dancing link。
+## 测试
 
-## 问题描述
-
-多线程编程是高性能编程的技术之一，实验 1 将针对数独求解问题比较多线
-程与单线程的性能差异、同一功能不同代码实现的性能差异以及多线程在不同硬
-件环境下的性能差异。 
-
-## 使用方式
+### 测试方法
 
 可以使用脚本`Lab1/test/test.sh`来一键式测试。详细信息在[说明文档](../test/README)中.最后运行的结果可以再`${usrid}_*.png`中看到
 
-## 实验环境
-|      | OS                                         | CPU                                 | RAM                  |
-| ---- | ------------------------------------------ | ----------------------------------- | -------------------- |
+### 实验环境
+|      |                     OS                     |                 CPU                 |         RAM          |
+| :--: | :----------------------------------------: | :---------------------------------: | :------------------: |
 | syy  | Ubuntu 18.04 bionic [Ubuntu on Windows 10] | Intel Core i7-7700HQ @ 8x 2.801 GHz | 7841 MiB / 12149 MiB |
-| feng | Ubuntu 18.04 bionic                        | Intel Xeon Gold 6161 @ 2x 2.2 Hz    | 1297 MiB / 3944 MiB  |
-| fgru | Ubuntu 16.04 xenial                        | Intel Core i7-8550U CPU @ 4 GHz     | 2013 MiB / 7768 MiB  |
-| fgru | Ubuntu 18.04 bionic                        | Intel Core i7-7500U @ 4x 2.904 GHz  | 1537 MiB / 6071 MiB  |
-| jjx  | Ubuntu 18.04 bionic                        | Intel Core i5-7200U @ 2.712 GHz     | 969 MiB / 1894 MiB   |
+| feng |            Ubuntu 18.04 bionic             |  Intel Xeon Gold 6161 @ 2x 2.2 Hz   | 1297 MiB / 3944 MiB  |
+| fgru |            Ubuntu 16.04 xenial             |   Intel Core i7-8550U CPU @ 4 GHz   | 2013 MiB / 7768 MiB  |
+| fgru |            Ubuntu 18.04 bionic             | Intel Core i7-7500U @ 4x 2.904 GHz  | 1537 MiB / 6071 MiB  |
+| jjx  |            Ubuntu 18.04 bionic             |   Intel Core i5-7200U @ 2.712 GHz   |  969 MiB / 1894 MiB  |
+
+
 
 *注：如果未说明，测试结果顺序也按此表格顺序列出。*
 
-
-## 算法
-
-本实验采用的是dancing link算法
-
-## 测试
 
 ### 正确性测试
 

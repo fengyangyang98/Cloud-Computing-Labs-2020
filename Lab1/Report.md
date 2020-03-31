@@ -1,58 +1,58 @@
-# <center> lab 1 Sudoku </center>
+# Lab 1 Performance Report
 
-##### <center>[2019_nCoV_killers](../../README.md)</center>
+*2019_nCoV_killers* 
 
 ## 实验内容
 
 实现一个可以解决数独问题的程序，实验分为basic和advanced难度。
 
-## 成果
-
-已经实现 advanced 级别，并且验证完毕，详细见正确性验证的部分。
-
-## 输入输出
-
-### 输入
-
-1. 在程序运行时输入测试文件名
-2. 可以输入多个文件名，输入时机随意
-3. 可以输入任意大小的文件
-
-### 输出
-
-默认情况下输出到屏幕
-
-## 算法
-
-选择的是dance-link算法。在后面的结果对比和分析全部使用dancing link。
-
-## 问题描述
+### 问题描述
 
 多线程编程是高性能编程的技术之一，实验 1 将针对数独求解问题比较多线
 程与单线程的性能差异、同一功能不同代码实现的性能差异以及多线程在不同硬
 件环境下的性能差异。 
 
-## 使用方式
+### 我们的工作
+
+已经实现 advanced 级别，并且验证完毕，详细见正确性验证的部分。
+
+### 算法
+
+选择的是dance-link算法。在后面的结果对比和分析全部使用dancing link。
+
+### 输入输出
+
+#### 输入
+
+1. 在程序运行时输入测试文件名
+2. 可以输入多个文件名，输入时机随意
+3. 可以输入任意大小的文件
+4. 使用 ctrl-d 结束文件输入，当结果计算完成之后会自动退出程序。
+
+#### 输出
+
+默认情况下输出到屏幕
+
+
+## 测试
+
+### 测试方法
 
 可以使用脚本`Lab1/test/test.sh`来一键式测试。详细信息在[说明文档](../test/README)中.最后运行的结果可以再`${usrid}_*.png`中看到
 
-## 实验环境
-|      | OS                                         | CPU                                 | RAM                  |
-| ---- | ------------------------------------------ | ----------------------------------- | -------------------- |
+### 实验环境
+|      |                     OS                     |                 CPU                 |         RAM          |
+| :--: | :----------------------------------------: | :---------------------------------: | :------------------: |
 | syy  | Ubuntu 18.04 bionic [Ubuntu on Windows 10] | Intel Core i7-7700HQ @ 8x 2.801 GHz | 7841 MiB / 12149 MiB |
-| feng | Ubuntu 18.04 bionic                        | Intel Xeon Gold 6161 @ 2x 2.2 Hz    | 1297 MiB / 3944 MiB  |
-| fgru | Ubuntu 16.04 xenial                        | Intel Core i7-8550U CPU @ 4 GHz     | 2013 MiB / 7768 MiB  |
-| fgru | Ubuntu 18.04 bionic                        | Intel Core i7-7500U @ 4x 2.904 GHz  | 1537 MiB / 6071 MiB  |
-| jjx  | Ubuntu 18.04 bionic                        | Intel Core i5-7200U @ 2.712 GHz     | 969 MiB / 1894 MiB   |
+| feng |            Ubuntu 18.04 bionic             |  Intel Xeon Gold 6161 @ 2x 2.2 Hz   | 1297 MiB / 3944 MiB  |
+| fgru |            Ubuntu 16.04 xenial             |   Intel Core i7-8550U CPU @ 4 GHz   | 2013 MiB / 7768 MiB  |
+| fgru |            Ubuntu 18.04 bionic             | Intel Core i7-7500U @ 4x 2.904 GHz  | 1537 MiB / 6071 MiB  |
+| jjx  |            Ubuntu 18.04 bionic             |   Intel Core i5-7200U @ 2.712 GHz   |  969 MiB / 1894 MiB  |
+
+
 
 *注：如果未说明，测试结果顺序也按此表格顺序列出。*
 
-
-## 算法
-
-本实验采用的是dancing link算法
-
-## 测试
 
 ### 正确性测试
 
@@ -66,7 +66,7 @@
 
 #### 输出方式
 
-<img src="test1.png" alt="test1" style="zoom: 70%;" />
+<img src="./doc/test1.png" alt="test1" style="zoom: 70%;" />
 
 *图一：在 feng 的机器中，将结果输出到屏幕或者重定向到文件，随着题目数量的增长，运行时间所产生的变化，其中横坐标是问题数量。*
 
@@ -74,7 +74,7 @@
 
 #### 线程数
 
-<img src="test2.png" alt="test2" style="zoom:70%;" />
+<img src="./doc/test2.png" alt="test2" style="zoom:70%;" />
 
 *图二：在不同机器中，使用不同数量的线程进行题目的求解所需要的时间，这里的线程不包含输入输出线程*
 
@@ -86,7 +86,7 @@ jjx的机器的实验结果相对反常，出现这个现象的原因：只有�
 
 #### 读入块
 
-<img src="test3.png" alt="test3" style="zoom:70%;" />
+<img src="./doc/test3.png" alt="test3" style="zoom:70%;" />
 
 *图三：在不同机器的实验环境下，一次性从文件中读入问题的个数与运行时间的关系，横坐标是题目数量*
 
@@ -96,7 +96,7 @@ jjx的机器的实验结果相对反常，出现这个现象的原因：只有�
 
 #### 加速比
 
-<img src="Speedup_ratio.png" alt="SpeedUp" style="zoom:70%;" />
+<img src="./doc/Speedup_ratio.png" alt="SpeedUp" style="zoom:70%;" />
 
 *图四：在不同机器环境下，运行多线程的解数独程序与实验提供的默认版本相比，在不同问题规模下的加速比。横坐标是题目数量*
 
