@@ -1,0 +1,3 @@
+PATH=/src/
+CC=g++
+

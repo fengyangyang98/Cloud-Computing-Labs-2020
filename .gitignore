@@ -9,3 +9,4 @@ test*.log
 *.diff
 *result*
 syy_test1.log
+bin
