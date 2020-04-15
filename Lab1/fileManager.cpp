@@ -128,4 +128,3 @@ void * filenameReadThread(void * arg){
 
     readFile = false;
 }
-
