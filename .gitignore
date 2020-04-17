@@ -1,5 +1,6 @@
 *.o
 *.hpp.gch
+*.h.gch
 *.sudoku
 *.vscode
 *.result
