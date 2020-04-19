@@ -9,5 +9,9 @@
 test*.log
 *.diff
 *result*
+
+Lab2/src/client/client
+Lab2/src/server/server
+
 syy_test1.log
 bin

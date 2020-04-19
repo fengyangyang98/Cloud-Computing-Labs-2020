@@ -30,9 +30,6 @@ protected:
     int _getAddress(sockaddr_in * addr, char * pAddress,
                    unsigned int length);
 public:
-    int setSocketLi(int lOnOff, int linger);
-    void setAddress(const char * pHostName, unsigned int port);
-
     // create a listening socket
     TransSocket();
 
@@ -86,6 +83,12 @@ public:
     // diable the small segment send
     int disableNagle();
 
+    // define how to close
+    int setSocketLi(int lOnOff, int linger);
+
+    // set the peer's address
+    void setAddress(const char * pHostName, unsigned int port);
+
     // get the peer info
     unsigned int getPeerPort();
     int getPeerAddress(char * pAddress, unsigned int length);
@@ -101,7 +104,7 @@ public:
 } ;
 
 
-typedef class TransSocket ossSocket;
+typedef class TransSocket Sock;
 
 
 

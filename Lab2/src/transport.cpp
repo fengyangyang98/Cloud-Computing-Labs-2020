@@ -1,6 +1,31 @@
 #include "global.h"
 #include "transport.hpp"
 
+int TransSocket::_getAddress(sockaddr_in * addr, char * pAddress,
+                            unsigned int length)
+{
+    int rc = SE_OK;
+    length = length < NI_MAXHOST ? length : NI_MAXHOST;
+
+    rc = getnameinfo((sockaddr*) addr, sizeof(sockaddr), pAddress, length,
+                      NULL, 0, NI_NUMERICHOST);
+
+    if(rc) {
+        PD_DEBUG_PRINTF("Failed to getnameinfo, rc = %d\n", SOCKET_GETLASTERROR);
+    }   
+
+done:
+    return rc;
+error:
+    goto done;
+}
+
+unsigned int TransSocket::_getPort(sockaddr_in *addr) 
+{
+    return ntohs(addr->sin_port);
+}
+
+
 // create a listening socket
 TransSocket::TransSocket()
 {
@@ -74,13 +99,13 @@ TransSocket::TransSocket(SOCKET *sock, int timeout)
     rc = getsockname(_fd, (sockaddr *)&_sockAddress, &_addressLen);
     if (rc)
     {
-        printf("Fialed to get sock name, error = %d\n", SOCKET_GETLASTERROR);
+        PD_DEBUG_PRINTF("Fialed to get sock name, error = %d\n", SOCKET_GETLASTERROR);
         _init = false;
     }
     else
     {
         rc = getpeername(_fd, (sockaddr *)&_peerAddress, &_peerAddressLen);
-        printf("Fialed to get peer name, error = %d\n", SOCKET_GETLASTERROR);
+        PD_DEBUG_PRINTF("Fialed to get peer name, error = %d\n", SOCKET_GETLASTERROR);
     }
 
 done:
@@ -105,7 +130,7 @@ int TransSocket::initSocket()
 
         if (_fd == -1)
         {
-            printf("Failed to initialize socket, error = %d\n", SOCKET_GETLASTERROR);
+            PD_DEBUG_PRINTF("Failed to initialize socket, error = %d\n", SOCKET_GETLASTERROR);
         }
         _init = true;
         setTimeout(_timeout);
@@ -126,25 +151,25 @@ int TransSocket::bindListen()
     // reuse
     rc = setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, (char *)&temp, sizeof(int));
     if (rc) {
-        printf("Failed to setsockopt SO_REUSEADDR, rc = %d\n", SOCKET_GETLASTERROR);
+        PD_DEBUG_PRINTF("Failed to setsockopt SO_REUSEADDR, rc = %d\n", SOCKET_GETLASTERROR);
     }
 
     // setting
     rc = setSocketLi(1, 30);
     if (rc) {
-        printf("Failed to setsockopt SO_LIGERR, rc = %d\n", SOCKET_GETLASTERROR);
+        PD_DEBUG_PRINTF("Failed to setsockopt SO_LIGERR, rc = %d\n", SOCKET_GETLASTERROR);
     }
 
     // bind
     rc = ::bind(_fd, (sockaddr *)&_sockAddress, _addressLen);
     if (rc) {
-        printf("Failed to bind socket, rc = %d\n", SOCKET_GETLASTERROR);
+        PD_DEBUG_PRINTF("Failed to bind socket, rc = %d\n", SOCKET_GETLASTERROR);
     }
 
     // listen
     rc = listen(_fd, SOMAXCONN);
     if (rc) {
-        printf( "Failed to listen socket, rc = %d\n", SOCKET_GETLASTERROR);
+        PD_DEBUG_PRINTF( "Failed to listen socket, rc = %d\n", SOCKET_GETLASTERROR);
     }
 
 done:
@@ -159,17 +184,17 @@ int TransSocket::Connect()
     int rc = SE_OK;
     rc = :: connect(_fd, (sockaddr*) &_sockAddress, _addressLen);
     if (rc) {
-        printf("Fail to connect, rc = %d\n", SOCKET_GETLASTERROR);
+        PD_DEBUG_PRINTF("Fail to connect, rc = %d\n", SOCKET_GETLASTERROR);
     }
 
     rc = getsockname(_fd, (sockaddr*) &_sockAddress, &_addressLen);
     if(rc) {
-        printf("Fail to get local address, rc = %d\n", rc);
+        PD_DEBUG_PRINTF("Fail to get local address, rc = %d\n", rc);
     }
 
     rc = getpeername(_fd, (sockaddr*) &_peerAddress, &_peerAddressLen);
     if(rc) {
-        printf( "Fail to get peer address, rc = %d\n", rc);
+        PD_DEBUG_PRINTF( "Fail to get peer address, rc = %d\n", rc);
     }
 
 done:
@@ -244,7 +269,7 @@ int TransSocket::Send(const char *pMsg, int length,
             {
                 continue;
             }
-            printf("Failed to select from socket, rc = %d\n", SOCKET_GETLASTERROR);
+            PD_DEBUG_PRINTF("Failed to select from socket, rc = %d\n", SOCKET_GETLASTERROR);
         }
 
         if (FD_ISSET(_fd, &fds))
@@ -259,7 +284,7 @@ int TransSocket::Send(const char *pMsg, int length,
         rc = ::send(_fd, pMsg, length, MSG_NOSIGNAL | flages);
         if (rc == -1)
         {
-            printf("Failed to send, rc = %d\n", SOCKET_GETLASTERROR);
+            PD_DEBUG_PRINTF("Failed to send, rc = %d\n", SOCKET_GETLASTERROR);
         }
 
         length -= rc;
@@ -314,7 +339,7 @@ int TransSocket::Recv(char *pMsg, int length, int timeout,
             {
                 continue;
             }
-            printf("Failed to select from socket, rc = %d\n", SOCKET_GETLASTERROR);
+            PD_DEBUG_PRINTF("Failed to select from socket, rc = %d\n", SOCKET_GETLASTERROR);
         }
 
         if (FD_ISSET(_fd, &fds))
@@ -336,19 +361,19 @@ int TransSocket::Recv(char *pMsg, int length, int timeout,
             pMsg += rc;
         }
         else if (rc == 0) {
-            printf("Peer unexpected shutdown\n");
+            PD_DEBUG_PRINTF("Peer unexpected shutdown\n");
         }
         else {
             rc = SOCKET_GETLASTERROR;
             if (((rc == SE_EAGAIN) || (rc == EWOULDBLOCK)) && (_timeout > 0)) {
-                printf("Revv() timeout, rc = %d\n", rc);
+                PD_DEBUG_PRINTF("Revv() timeout, rc = %d\n", rc);
             }
 
             if ((rc == SE_EINTR) && (retries < MAX_RECV_RETRIES)) {
                 retries++;
                 continue;
             }
-            printf("Revv() timeout, rc = %d\n", rc);
+            PD_DEBUG_PRINTF("Revv() timeout, rc = %d\n", rc);
         }
     }
 
@@ -396,7 +421,7 @@ int TransSocket::Recv(char *pMsg, int length, int timeout)
             {
                 continue;
             }
-            printf("Failed to select from socket, rc = %d\n", SOCKET_GETLASTERROR);
+            PD_DEBUG_PRINTF("Failed to select from socket, rc = %d\n", SOCKET_GETLASTERROR);
         }
 
         if (FD_ISSET(_fd, &fds))
@@ -410,19 +435,19 @@ int TransSocket::Recv(char *pMsg, int length, int timeout)
     {
         length = rc;
     } else if (rc == 0) {
-        printf("Peer unexpected shutdown\n");
+        PD_DEBUG_PRINTF("Peer unexpected shutdown\n");
     } else {
         rc = SOCKET_GETLASTERROR;
         if (((rc == SE_EAGAIN) || (rc == EWOULDBLOCK)) && (_timeout > 0))
         {
-            printf("Revv() timeout, rc = %d\n", rc);
+            PD_DEBUG_PRINTF("Revv() timeout, rc = %d\n", rc);
         }
 
         if ((rc == SE_EINTR) && (retries < MAX_RECV_RETRIES))
         {
             retries++;
         }
-        printf("Revv() timeout, rc = %d\n", rc);
+        PD_DEBUG_PRINTF("Revv() timeout, rc = %d\n", rc);
     }
 
     rc = SE_OK;
@@ -467,7 +492,8 @@ int TransSocket::Accept(SOCKET * sock, sockaddr *addr,
             {
                 continue;
             }
-            printf("Failed to select from socket, rc = %d\n", SOCKET_GETLASTERROR);
+            PD_DEBUG_PRINTF("Failed to select from socket, rc = %d\n", SOCKET_GETLASTERROR);
+            goto error;
         }
 
         if (FD_ISSET(_fd, &fds))
@@ -479,7 +505,8 @@ int TransSocket::Accept(SOCKET * sock, sockaddr *addr,
     rc = SE_OK;
     *sock = ::accept(_fd, addr, addrlen);
     if(*sock == -1) {
-        printf("Failed to accept socket, rc = %d\n", SOCKET_GETLASTERROR);
+        PD_DEBUG_PRINTF("Failed to accept socket, rc = %d\n", SOCKET_GETLASTERROR);
+        goto error;
     }
 
 done:
@@ -489,6 +516,7 @@ error:
     goto done;
 }
 
+// If you wanna keep the completeness of each package, call this method.
 int TransSocket::disableNagle()
 {
     int rc = SE_OK;
@@ -496,40 +524,54 @@ int TransSocket::disableNagle()
 
     rc = setsockopt(_fd, IPPROTO_TCP, TCP_NODELAY, (char*) &temp, sizeof(int));
     if(rc) {
-        printf("Failed to setsockopt, rc = %d\n", SOCKET_GETLASTERROR);
+        PD_DEBUG_PRINTF("Failed to setsockopt, rc = %d\n", SOCKET_GETLASTERROR);
     }
 
     rc = setsockopt(_fd, SOL_SOCKET, SO_KEEPALIVE, (char*) &temp, sizeof(int));
     if(rc) {
-        printf("Failed to setsockopt, rc = %d\n", SOCKET_GETLASTERROR);
+        PD_DEBUG_PRINTF("Failed to setsockopt, rc = %d\n", SOCKET_GETLASTERROR);
     }
     return rc;
 }
 
-int TransSocket::_getAddress(sockaddr_in * addr, char * pAddress,
-                            unsigned int length)
+// define how to close
+int TransSocket::setSocketLi(int lOnOff, int linger)
 {
     int rc = SE_OK;
-    length = length < NI_MAXHOST ? length : NI_MAXHOST;
+    struct linger _linger;
 
-    rc = getnameinfo((sockaddr*) addr, sizeof(sockaddr), pAddress, length,
-                      NULL, 0, NI_NUMERICHOST);
+    _linger.l_linger = lOnOff;
+    _linger.l_linger = linger;
 
-    if(rc) {
-        printf("Failed to getnameinfo, rc = %d\n", SOCKET_GETLASTERROR);
-    }   
-
-done:
+    rc = setsockopt(_fd, SOL_SOCKET, SO_LINGER,
+                    (const char *)&_linger, sizeof(_linger));
     return rc;
-error:
-    goto done;
 }
 
-unsigned int TransSocket::_getPort(sockaddr_in *addr) 
+// set the peer's address
+void TransSocket::setAddress(const char *pHostName, unsigned int port)
 {
-    return ntohs(addr->sin_port);
+    hostent *hp;
+    memset(&_sockAddress, 0, sizeof(sockaddr_in));
+    memset(&_peerAddress, 0, sizeof(sockaddr_in));
+    _peerAddressLen = sizeof(_peerAddress);
+    _sockAddress.sin_family = AF_INET;
+
+    if ((hp = gethostbyname(pHostName))) {
+        _sockAddress.sin_addr.s_addr = *((int *)hp->h_addr_list[0]);
+    }
+    else {
+        _sockAddress.sin_addr.s_addr = inet_addr(pHostName);
+    }
+
+    _sockAddress.sin_port = htons(port);
+    _addressLen = sizeof(_sockAddress);
 }
 
+
+/*
+    >>> INFORMATION
+*/
 unsigned int TransSocket::getLocalPort()
 {
     return _getPort(&_sockAddress);
@@ -579,37 +621,13 @@ int TransSocket::setTimeout(int seconds)
 
     rc = setsockopt(_fd, SOL_SOCKET, SO_RCVTIMEO, (char*) &tv, sizeof(tv));
     if(rc) {
-        printf("Failed to setsockopt, rc = %d\n", SOCKET_GETLASTERROR);
+        PD_DEBUG_PRINTF("Failed to setsockopt, rc = %d\n", SOCKET_GETLASTERROR);
     }
 
     rc = setsockopt(_fd, SOL_SOCKET, SO_SNDTIMEO, (char*) &tv, sizeof(tv));
     if(rc) {
-        printf("Failed to setsockopt, rc = %d\n", SOCKET_GETLASTERROR);
+        PD_DEBUG_PRINTF("Failed to setsockopt, rc = %d\n", SOCKET_GETLASTERROR);
     }
 
     return rc;
-}
-
-int TransSocket::_getAddress(sockaddr_in * addr, char * pAddress,
-                            unsigned int length)
-{
-    int rc = SE_OK;
-    length = length < NI_MAXHOST ? length : NI_MAXHOST;
-
-    rc = getnameinfo((sockaddr*) addr, sizeof(sockaddr), pAddress, length,
-                      NULL, 0, NI_NUMERICHOST);
-
-    if(rc) {
-        printf("Failed to getnameinfo, rc = %d\n", SOCKET_GETLASTERROR);
-    }   
-
-done:
-    return rc;
-error:
-    goto done;
-}
-
-unsigned int TransSocket::_getPort(sockaddr_in *addr) 
-{
-    return ntohs(addr->sin_port);
 }

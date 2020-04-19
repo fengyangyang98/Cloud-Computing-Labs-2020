@@ -1,14 +1,14 @@
-VPATH =./src
+VPATH =../ ./
 CPP = g++
 CXXFLAGS = -std=c++11 -O2 -g 
-OBJS = main.o util.o transport.o
+OBJS = server.o util.o transport.o
 LIBS = -lpthread
 
-httpserver : $(OBJS)
+server : $(OBJS)
 	$(CPP) $(CXXFLAGS) -o $@ $(OBJS) $(LIBS)
-	rm *.o ./src/*.h.gch
+	rm *.o ../*.h.gch
 
-main.o : main.cpp
+server.o : server.cpp
 	$(CPP) $(CXXFLAGS) -c $^ $(LIBS)
 
 util.o : util.h util.cpp
