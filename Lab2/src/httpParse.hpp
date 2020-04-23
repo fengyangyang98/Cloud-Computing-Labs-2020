@@ -1,6 +1,13 @@
-#ifndef HTTP_PARSE_HPP
-#define HTTP_PARSE_HPP
+#ifndef httpParse_HPP
+#define httpParse_HPP
 
+#include <iostream>
+#include <fstream>
+#include <iostream>
+#include<bits/stdc++.h>
 
+using namespace std;
 
-#endif
+void Parse(char* aff_filename,char* eff_filename);
+
+#endif 

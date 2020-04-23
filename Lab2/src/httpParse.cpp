@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include<bits/stdc++.h>
+#include "httpParse.hpp"
 
 using namespace std;
 
@@ -9,11 +10,11 @@ const char* readFile(const char* fileName);
 int strnum=0;  //字符串个数 
 
 
-int main()
+void Parse(char* aff_filename,char* eff_filename)
 {
 	ofstream data2;
-	data2.open("output2.txt",ios::out); 
-	const char* result = readFile("input2.txt");
+	data2.open(eff_filename,ios::out); 
+	const char* result = readFile(aff_filename);
     cout <<"传入内容："<<result;
 	string s="";
 
@@ -59,7 +60,6 @@ int main()
 		data2<<s<<endl;
 	}
 	data2.close();
-	return 0; 
 }
  
  
@@ -99,3 +99,11 @@ const char* readFile(const char* fileName) {
 	}
 	return NULL;
 }
+
+/*
+int main()
+{
+	Parse("input1.txt","output1.txt");
+	return 0;
+}
+*/
