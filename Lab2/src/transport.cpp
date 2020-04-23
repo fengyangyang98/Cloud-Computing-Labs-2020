@@ -300,7 +300,7 @@ error:
 }
 
 // receive the data
-int TransSocket::Recv(char *pMsg, int length, int timeout,
+int TransSocket::Recv(char *pMsg, int length, size_t * size, int timeout,
                       int flags)
 {
     int rc = SE_OK;
@@ -350,7 +350,7 @@ int TransSocket::Recv(char *pMsg, int length, int timeout,
     }
 
     // receive data
-    
+    if(size) * size = 0;
     while (length > 0)
     {
         rc = ::recv(_fd, pMsg, length, MSG_NOSIGNAL | flags);
@@ -362,16 +362,17 @@ int TransSocket::Recv(char *pMsg, int length, int timeout,
 
             length -= rc;
             pMsg += rc;
+            if(size) * size += rc;
         }
         else if (rc == 0) {
             PD_DEBUG_PRINTF("Peer unexpected shutdown\n");
-            goto error;
+            break;
         }
         else {
             rc = SOCKET_GETLASTERROR;
             if (((rc == SE_EAGAIN) || (rc == EWOULDBLOCK)) && (_timeout > 0)) {
                 PD_DEBUG_PRINTF("Revv() timeout, rc = %d\n", rc);
-                goto error;
+                break;
             }
 
             if ((rc == SE_EINTR) && (retries < MAX_RECV_RETRIES)) {
@@ -379,7 +380,7 @@ int TransSocket::Recv(char *pMsg, int length, int timeout,
                 continue;
             }
             PD_DEBUG_PRINTF("Revv() timeout, rc = %d\n", rc);
-            goto error;
+            break;
         }
     }
 
@@ -391,7 +392,7 @@ error:
     goto done;
 }
 
-int TransSocket::Recv(char *pMsg, int length, int timeout)
+int TransSocket::Recv(char *pMsg, int length, int timeout, size_t * size)
 {
     int rc = SE_OK;
     int retries = 0;
@@ -417,6 +418,7 @@ int TransSocket::Recv(char *pMsg, int length, int timeout)
         if (rc == 0)
         {
             rc = SE_TIMEOUT;
+            if(size) *size = rc;
             goto done;
         }
 

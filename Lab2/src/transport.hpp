@@ -70,9 +70,10 @@ public:
 
     // receive the data
     int Recv(char * pMsg, int length, 
+             size_t * size = nullptr,
              int timeout=TRANS_SOCKET_DFT_TIMEOUT,
              int flag=0);
-    int Recv(char * pMsg, int length, int timeout);
+    int Recv(char * pMsg, int length, int timeout, size_t * size = nullptr);
 
     // get one connecting request in the waiting queue, and create a
     // new socket
