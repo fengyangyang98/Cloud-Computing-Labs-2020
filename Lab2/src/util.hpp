@@ -1,12 +1,13 @@
-#ifndef UTIL_H
-#define UTIL_H
+#pragma once
 
 #include "global.h"
 #include "iostream"
 #include <getopt.h>
 
-using std::cout;
-
 void GetOptLong(int argc, char *argv[]);
+namespace this_debug
+{
+    void show_config();
+} // namespace debug
 
-#endif // UTIL_H
+void mem_free();

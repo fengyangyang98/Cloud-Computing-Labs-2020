@@ -75,6 +75,6 @@ void * answerPrinter(void * arg)
             break;
         }
     }
-    free(resultBuf);   
+    free(resultBuf);
 }
 

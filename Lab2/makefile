@@ -6,12 +6,12 @@ LIBS = -lpthread
 
 httpserver : $(OBJS)
 	$(CPP) $(CXXFLAGS) -o $@ $(OBJS) $(LIBS)
-	rm *.o ./src/*.h.gch
+	rm *.o ./src/*.gch 
 
-main.o : main.cpp
+main.o : main.cpp threadpool.hpp
 	$(CPP) $(CXXFLAGS) -c $^ $(LIBS)
 
-util.o : util.h util.cpp
+util.o : util.hpp util.cpp
 	$(CPP) $(CXXFLAGS) -c $^ $(LIBS)
 
 transport.o : transport.hpp transport.cpp
