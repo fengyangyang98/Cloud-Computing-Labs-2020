@@ -8,6 +8,7 @@
 
 using namespace std;
 
-void Parse(char* aff_filename,char* eff_filename);
+void apart(char* result);   //²ð·Ö 
+void connect(char* filename,char* request,char* header);   //Á¬½Ó 
 
 #endif 
