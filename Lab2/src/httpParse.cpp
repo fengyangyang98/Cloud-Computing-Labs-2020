@@ -8,7 +8,77 @@ using namespace std;
 
 const char* readFile(const char* fileName);
 int strnum=0;  //字符串个数 
+string s="";
+map<string, string> post;  // 定义一个map对象
 
+void apart(char* result)  //拆分 
+{
+	cout<<endl<<"---字符串转化为结构体---"<<endl; 
+	string str6;
+	
+	int k=0,i=0,k3=0;
+    while(s.length()!=0)
+    {
+       	k3=s.find("\\r\\n\\r\\n");
+       	if(k3>0)
+		{
+			str6=s.substr((k3)+8,s.length()-k3);
+		//	post["Entity-body"]=str6;
+       	   // cout<<"str6:"<<str6<<endl;
+		}
+       	
+		s=s.substr(0,k3);
+    	k=s.find("\\r\\n");
+    	if(k>=0)
+    	{
+    		string str1=s.substr(i,k-i);
+    		int id_num=str1.find(':');
+    		if(id_num>0)
+    		{
+    		   	string str2=str1.substr(0,id_num);
+    		   	string str3=str1.substr(id_num+1,str1.length()-id_num);
+    		   	post[str2]=str3;
+			}
+			else
+			{
+			   	int id_num2=str1.find(' ');
+			   	string str4=str1.substr(0,id_num2);
+			   	string str5=str1.substr(id_num2+1,str1.length()-id_num2);
+			   	post["Version"]=str4;
+			   	post["State-code"]=str5;
+			   	//post["Status-line"]=str1;
+			}
+    		cout<<str1<<endl;
+    		int k2=k+4;
+    		s=s.substr(k2,s.length()-k2);
+		}
+		else
+		{
+			cout<<s<<endl;
+			break;
+	    }
+	}	
+	cout<<endl<<str6<<endl;
+	for (map<string,string>::iterator it = post.begin(); it != post.end(); it++) 
+	{
+        cout << it->first << " " << it->second << endl;   
+	}
+} 
+
+void connect(char* result)   //连接 
+{
+	string s1="";
+	cout<<endl<<"---结构体转化为字符串---"<<endl; 
+	for(int i=0;i<strlen(result);i++)
+	{
+		if(result[i]=='\n')
+		{
+			s1=s1+"\\r\\n";
+		}
+		else s1=s1+result[i];
+	}
+	cout<<s1<<endl;
+}
 
 void Parse(char* aff_filename,char* eff_filename)
 {
@@ -16,48 +86,18 @@ void Parse(char* aff_filename,char* eff_filename)
 	data2.open(eff_filename,ios::out); 
 	const char* result = readFile(aff_filename);
     cout <<"传入内容："<<result;
-	string s="";
+	for(int i=0;i<strlen(result);i++)
+    {
+		s=s+result[i];  //转化为字符串 
+    }
 
 	if(strnum==1)
 	{
-		cout<<endl<<"---字符串转化为结构体---"<<endl; 
-		for(int i=0;i<strlen(result);i++)
-       {
-		   s=s+result[i];
-       }
-		int k=0,i=0;
-        while(s.length()!=0)
-       {
-    	   k=s.find("\\r\\n");
-    	   if(k>=0)
-    	   {
-    		   string str1=s.substr(i,k-i);
-    		   cout<<str1<<endl;
-    		   data2<<str1<<endl;
-    		   int k2=k+4;
-    		   s=s.substr(k2,s.length()-k2);
-		   }
-		   else
-		   {
-			   cout<<s<<endl;
-			   data2<<s<<endl;
-			   break;
-	       }
-	    }	
+		apart((char*) result);
 	} 
 	else
 	{
-		cout<<endl<<"---结构体转化为字符串---"<<endl; 
-		for(int i=0;i<strlen(result);i++)
-		{
-			if(result[i]=='\n')
-			{
-				s=s+"\\r\\n";
-			}
-			else s=s+result[i];
-		}
-		cout<<s<<endl;
-		data2<<s<<endl;
+		connect((char*) result);
 	}
 	data2.close();
 }
@@ -103,7 +143,7 @@ const char* readFile(const char* fileName) {
 /*
 int main()
 {
-	Parse("input1.txt","output1.txt");
+	Parse("input3.txt","output3.txt");
 	return 0;
 }
 */
