@@ -340,6 +340,7 @@ int TransSocket::Recv(char *pMsg, int length, int timeout,
                 continue;
             }
             PD_DEBUG_PRINTF("Failed to select from socket, rc = %d\n", SOCKET_GETLASTERROR);
+            goto error;
         }
 
         if (FD_ISSET(_fd, &fds))
@@ -349,9 +350,11 @@ int TransSocket::Recv(char *pMsg, int length, int timeout,
     }
 
     // receive data
+    
     while (length > 0)
     {
         rc = ::recv(_fd, pMsg, length, MSG_NOSIGNAL | flags);
+
         if (rc > 0) {
             if (flags & MSG_PEEK) {
                 goto done;
@@ -362,11 +365,13 @@ int TransSocket::Recv(char *pMsg, int length, int timeout,
         }
         else if (rc == 0) {
             PD_DEBUG_PRINTF("Peer unexpected shutdown\n");
+            goto error;
         }
         else {
             rc = SOCKET_GETLASTERROR;
             if (((rc == SE_EAGAIN) || (rc == EWOULDBLOCK)) && (_timeout > 0)) {
                 PD_DEBUG_PRINTF("Revv() timeout, rc = %d\n", rc);
+                goto error;
             }
 
             if ((rc == SE_EINTR) && (retries < MAX_RECV_RETRIES)) {
@@ -374,6 +379,7 @@ int TransSocket::Recv(char *pMsg, int length, int timeout,
                 continue;
             }
             PD_DEBUG_PRINTF("Revv() timeout, rc = %d\n", rc);
+            goto error;
         }
     }
 
@@ -422,6 +428,7 @@ int TransSocket::Recv(char *pMsg, int length, int timeout)
                 continue;
             }
             PD_DEBUG_PRINTF("Failed to select from socket, rc = %d\n", SOCKET_GETLASTERROR);
+            goto error;
         }
 
         if (FD_ISSET(_fd, &fds))
@@ -436,11 +443,13 @@ int TransSocket::Recv(char *pMsg, int length, int timeout)
         length = rc;
     } else if (rc == 0) {
         PD_DEBUG_PRINTF("Peer unexpected shutdown\n");
+        goto done;
     } else {
         rc = SOCKET_GETLASTERROR;
         if (((rc == SE_EAGAIN) || (rc == EWOULDBLOCK)) && (_timeout > 0))
         {
             PD_DEBUG_PRINTF("Revv() timeout, rc = %d\n", rc);
+            goto error;
         }
 
         if ((rc == SE_EINTR) && (retries < MAX_RECV_RETRIES))
@@ -448,6 +457,7 @@ int TransSocket::Recv(char *pMsg, int length, int timeout)
             retries++;
         }
         PD_DEBUG_PRINTF("Revv() timeout, rc = %d\n", rc);
+        goto error;
     }
 
     rc = SE_OK;
