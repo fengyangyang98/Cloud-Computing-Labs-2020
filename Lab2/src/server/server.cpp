@@ -15,8 +15,8 @@ int main()
     rc = serverSock.bindListen();
     PD_DEBUG(rc);
 
-    char *buf = (char *)malloc(100);
-    memset(buf, 0, 100);
+    char *buf = (char *)malloc(1024);
+    memset(buf, 0, 1024);
 
     while (1)
     {
@@ -26,17 +26,15 @@ int main()
         if(rc == SE_OK) {
             printf("%d\n",clientSocket);
             TransSocket newSocket(&clientSocket);
-            while(1) {
-                rc = newSocket.Recv(buf, 5);
-                if(!rc) {
-                    printf("%s\n", buf);
-                    break;
-                }
-            }
-            newSocket.Close();
+            size_t size;
+            rc = newSocket.Recv(buf, 1024, TRANS_SOCKET_DFT_TIMEOUT, &size);
+            printf("%d\n", size);
+            printf("%s\n", buf);
             break;
+            
+            newSocket.Close();
         }
-        // sleep(0.5);
     }
+
     free(buf);
 }

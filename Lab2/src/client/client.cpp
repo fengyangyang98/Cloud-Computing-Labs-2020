@@ -15,8 +15,8 @@ int main()
     // disable the small package to transport
     clientSock.disableNagle();
 
-    std::string str;
-    while(clientSock.isConnected() && std::cin >> str) {
-        clientSock.Send(str.c_str(), str.length());
-    }
+    std::string str = "nuasfdsag";
+    clientSock.Send(str.c_str(), str.length());
+
+    while(1){}
 }

@@ -354,6 +354,7 @@ int TransSocket::Recv(char *pMsg, int length, size_t * size, int timeout,
     while (length > 0)
     {
         rc = ::recv(_fd, pMsg, length, MSG_NOSIGNAL | flags);
+        std::cout << rc << std::endl;
 
         if (rc > 0) {
             if (flags & MSG_PEEK) {
@@ -414,11 +415,11 @@ int TransSocket::Recv(char *pMsg, int length, int timeout, size_t * size)
 
         rc = select(maxFD + 1, &fds, NULL, NULL,
                     timeout >= 0 ? &maxSelectTime : NULL);
+        
 
         if (rc == 0)
         {
             rc = SE_TIMEOUT;
-            if(size) *size = rc;
             goto done;
         }
 
@@ -443,6 +444,8 @@ int TransSocket::Recv(char *pMsg, int length, int timeout, size_t * size)
     if (rc > 0)
     {
         length = rc;
+        if(size) *size = rc;
+        
     } else if (rc == 0) {
         PD_DEBUG_PRINTF("Peer unexpected shutdown\n");
         goto done;
