@@ -1,4 +1,4 @@
-OBJS = fileManager.o solver.o solverManager.o main.o
+OBJS = fileManager.o solver.o solverManager.o main.o cthreadpool.o
 CPP = g++
 FLAGES = -std=c++11 -O2 
 
@@ -15,6 +15,9 @@ solver.o: solver.cpp solver.hpp
 	$(CPP) $(FLAGES) -c $^ -lpthread
 
 solverManager.o: solverManager.cpp solverManager.hpp
+	$(CPP) $(FLAGES) -c $^ -lpthread
+
+cthreadpool.o: cthreadpool.h cthreadpool.cpp
 	$(CPP) $(FLAGES) -c $^ -lpthread
 
 PHONY: clean

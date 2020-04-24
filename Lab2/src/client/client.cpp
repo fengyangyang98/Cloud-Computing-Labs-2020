@@ -15,6 +15,7 @@ int main(int argc, char* argv[])
     // disable the small package to transport
     clientSock.disableNagle();
 
+<<<<<<< HEAD
     std::string str(argv[1]);
     for (int i = 0;i < 100 &&clientSock.isConnected() ; ++i) {
         clientSock.Send(str.c_str(), str.length());
@@ -23,4 +24,10 @@ int main(int argc, char* argv[])
         }
     }
     clientSock.Close();
+=======
+    std::string str = "nuasfdsag";
+    clientSock.Send(str.c_str(), str.length());
+
+    while(1){}
+>>>>>>> 7535c29447e815055da4441a7d0ff502affbc14e
 }

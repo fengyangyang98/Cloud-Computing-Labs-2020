@@ -1,7 +1,7 @@
 #ifndef FILEOP_HPP_
 #define FILEOP_HPP_
 
-#include "global.hpp"
+#include "global.h"
 
 // Linux file operation 
 #define S_struct_statfs  struct statfs64

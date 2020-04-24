@@ -1,14 +1,12 @@
 #ifndef httpParse_HPP
 #define httpParse_HPP
 
-#include <iostream>
+#include "global.h"
 #include <fstream>
-#include <iostream>
-#include<bits/stdc++.h>
 
-using namespace std;
+using std::map;
 
-void apart(char* result);   //²ð·Ö 
-void connect(char* filename,char* request,char* header);   //Á¬½Ó 
+void apart(const char* result, map<string, string> post,string s);   //ï¿½ï¿½ï¿½ 
+void connect(char* filename,char* request,char* header,string s);   //ï¿½ï¿½ï¿½ï¿½ 
 
 #endif 

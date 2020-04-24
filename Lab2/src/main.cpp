@@ -1,21 +1,7 @@
 #include "global.h"
-#include "httpParse.hpp"
-#include "threadpool.hpp"
+#include "transport.hpp"
 #include "util.hpp"
-
-using std::endl;
-
-void fun(int x) {
-  cout << "task " << x << " working in thread "
-            << std::this_thread::get_id() << endl;
-  cout << "task " << x << " working in thread "
-            << std::this_thread::get_id() << endl;
-  cout << "task " << x << " working in thread "
-            << std::this_thread::get_id() << endl;
-  cout << "task " << x << " working in thread "
-            << std::this_thread::get_id() << endl;
-  cout << "---------------------------------------------\n";
-}
+#include "multithread.h"
 
 int main(int argc, char *argv[]) {
   // init
@@ -36,22 +22,10 @@ int main(int argc, char *argv[]) {
    * occur. (If needed proxy another request to another HTTP server).
    */
 
-  ThreadPool pool(*thread_num);
-  vector<future<int> > results;
+  handle();
 
-  for (int i = 0; i < 8; ++i) {
-    results.emplace_back(pool.enqueue([i] {
-      cout << "hello " << i << endl;
-      std::this_thread::sleep_for(chrono::seconds(1));
-      cout << "world " << i << endl;
-      return i * i;
-    }));
-  }
-
-  for (auto &&result : results) cout << result.get() << ' ';
-  cout << endl;
-
-
+  // release ops but in this lab, code will never get here.
+  // thread_pool.StopAll();
   mem_free();
   return 0;
 }

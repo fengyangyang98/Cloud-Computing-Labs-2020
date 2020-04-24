@@ -38,6 +38,7 @@ int main(int argc, char *argv[]) {
   rc = serverSock.initSocket();
   PD_DEBUG(rc);
 
+<<<<<<< HEAD
   // listen the port
   rc = serverSock.bindListen();
   PD_DEBUG(rc);
@@ -52,4 +53,28 @@ int main(int argc, char *argv[]) {
     }
     // sleep(0.5);
   }
+=======
+    char *buf = (char *)malloc(1024);
+    memset(buf, 0, 1024);
+
+    while (1)
+    {
+        int clientSocket;
+        // accecept a connect requset
+        rc = serverSock.Accept((SOCKET *)&clientSocket, NULL, NULL);
+        if(rc == SE_OK) {
+            printf("%d\n",clientSocket);
+            TransSocket newSocket(&clientSocket);
+            size_t size;
+            rc = newSocket.Recv(buf, 1024, TRANS_SOCKET_DFT_TIMEOUT, &size);
+            printf("%d\n", size);
+            printf("%s\n", buf);
+            break;
+            
+            newSocket.Close();
+        }
+    }
+
+    free(buf);
+>>>>>>> 7535c29447e815055da4441a7d0ff502affbc14e
 }

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __UTIL_HPP
+#define __UTIL_HPP
 
 #include "global.h"
 #include "iostream"
@@ -11,3 +12,5 @@ namespace this_debug
 } // namespace debug
 
 void mem_free();
+
+#endif // __UTIL_HPP

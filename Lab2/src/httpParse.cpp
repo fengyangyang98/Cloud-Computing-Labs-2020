@@ -1,18 +1,14 @@
-#include <iostream>
-#include <fstream>
-#include <iostream>
-#include<bits/stdc++.h>
 #include "httpParse.hpp"
 
 using namespace std;
 
 const char* readFile(const char* fileName);
-string s="";
-map<string, string> post;  // ¶¨ÒåÒ»¸ömap¶ÔÏó
+// string s="";
+// map<string, string> post;  // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½mapï¿½ï¿½ï¿½ï¿½
 
-void apart(char* result)  //²ð·Ö 
+void apart(const char* result, map<string, string> post,string s)  //ï¿½ï¿½ï¿½ 
 {
-	//cout<<endl<<"---×Ö·û´®×ª»¯Îª½á¹¹Ìå---"<<endl; 
+	//cout<<endl<<"---ï¿½Ö·ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½á¹¹ï¿½ï¿½---"<<endl; 
 	string str6;
 	
 	for(int i=0;i<strlen(result);i++)
@@ -69,18 +65,16 @@ void apart(char* result)  //²ð·Ö
 	{
         cout << it->first << " " << it->second << endl;   
 	}
-} 
+}
 
-
-
-void connect(char* filename,char* request,char* header)  //Á¬½Ó
+void connect(char* filename,char* request,char* header,string s)  //ï¿½ï¿½ï¿½ï¿½
 {
 	const char* result = readFile(filename);
-  //  cout <<"´«ÈëÄÚÈÝ£º"<<result;
+  //  cout <<"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½"<<result;
     string s3="";
 	for(int i=0;i<strlen(request);i++)
     {
-		s3=s3+request[i];  //×ª»¯Îª×Ö·û´® 
+		s3=s3+request[i];  //×ªï¿½ï¿½Îªï¿½Ö·ï¿½ï¿½ï¿½ 
     }
     s3=s3+"\\r\\n";
     
@@ -110,19 +104,19 @@ void connect(char* filename,char* request,char* header)  //Á¬½Ó
  
  
 const char* readFile(const char* fileName) {
-	ifstream file(fileName);                            // ´ò¿ªÎÄ¼þ
+	ifstream file(fileName);                            // ï¿½ï¿½ï¿½Ä¼ï¿½
 	char* content;
-	content = (char*)malloc(sizeof(char) * 40960);           // ¼ÙÉèÎÄ¼þ×î´óÎª40K£¬¿É×Ô¶¨Òå
+	content = (char*)malloc(sizeof(char) * 40960);           // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Îª40Kï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½
 	if (content)
 	{
-		char buff[1024];                                     // 1KbµÄ»º³åÇø
+		char buff[1024];                                     // 1Kbï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½
 		int pt = 0;
 		int strnum=0;
-		while (file.getline(buff, 1024))                     // °´ÐÐ¶ÁÈ¡ÎÄ¼þµ½»º³åÇø
+		while (file.getline(buff, 1024))                     // ï¿½ï¿½ï¿½Ð¶ï¿½È¡ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			for (int i = 0; i < 1024; i++) {
 				char tmp = buff[i];
-				if (tmp == '\0') {                           // Óöµ½\0Ê±»»ÐÐ£¬¼ÌÐø¶ÁÈ¡ÏÂÒ»ÐÐ
+				if (tmp == '\0') {                           // ï¿½ï¿½ï¿½ï¿½\0Ê±ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½
 					content[pt] = '\n';
 					pt++;
 					strnum++;
@@ -132,13 +126,13 @@ const char* readFile(const char* fileName) {
 				pt++;
 			}
 		}
-		content[pt] = '\0';                                  // ¶ÁÈ¡½áÊø£¬¹¹½¨×Ö·û´®Î²
-		char* result = (char*)malloc(sizeof(char) * (++pt)); // ÉêÇëpt+1¸ö×Ö½ÚµÄÄÚ´æ¿Õ¼ä
+		content[pt] = '\0';                                  // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Î²
+		char* result = (char*)malloc(sizeof(char) * (++pt)); // ï¿½ï¿½ï¿½ï¿½pt+1ï¿½ï¿½ï¿½Ö½Úµï¿½ï¿½Ú´ï¿½Õ¼ï¿½
 		if (!result)
 			return NULL;
 		for (int i = 0; i < pt; i++) {
 			result[i] = content[i];   
-			//std::cout<<result[i]<<'\n';                       // ×Ö·û´®¸´ÖÆ
+			//std::cout<<result[i]<<'\n';                       // ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		}
 		//cout<<strnum<<'\n';
 		return result;
