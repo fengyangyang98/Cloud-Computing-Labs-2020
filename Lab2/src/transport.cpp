@@ -445,10 +445,13 @@ int TransSocket::Recv(char *pMsg, int length, int timeout, size_t * size)
     {
         length = rc;
         if(size) *size = rc;
+        rc = SE_OK;
         
     } else if (rc == 0) {
         PD_DEBUG_PRINTF("Peer unexpected shutdown\n");
+        rc = SE_TIMEOUT;
         goto done;
+
     } else {
         rc = SOCKET_GETLASTERROR;
         if (((rc == SE_EAGAIN) || (rc == EWOULDBLOCK)) && (_timeout > 0))
@@ -465,7 +468,7 @@ int TransSocket::Recv(char *pMsg, int length, int timeout, size_t * size)
         goto error;
     }
 
-    rc = SE_OK;
+    
 
 done:
     return rc;

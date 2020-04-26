@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
   char buffer[2048];
   memset(buffer, 0, 2048);
   int length = 1026;
-  while (clientSock.isConnected()) {
+  while (!rc) {
     size_t size;
     rc = clientSock.Recv(buffer, 1024, TRANS_SOCKET_DFT_TIMEOUT, &size);
     if (!rc){
@@ -30,4 +30,5 @@ int main(int argc, char *argv[]) {
         // break;
     }
   }
+  
 }
