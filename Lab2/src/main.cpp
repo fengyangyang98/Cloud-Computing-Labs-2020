@@ -1,7 +1,5 @@
-#include "global.h"
-#include "transport.hpp"
 #include "util.hpp"
-#include "multithread.h"
+#include "sockethandle.h"
 
 int main(int argc, char *argv[]) {
   // init
@@ -14,7 +12,7 @@ int main(int argc, char *argv[]) {
   /**
    * TODOLIST:
    * @Author : Shi Yuanyou
-   * 1. create socket and bind it to port(port).
+   * 1. [DONE] create socket and bind it to port(port).
    * 2. checking proxy_mode. If it's true, then open push Request and pull
    * Response.
    * 3. create threads (thread pool, dynamic create or mix up).
@@ -22,10 +20,16 @@ int main(int argc, char *argv[]) {
    * occur. (If needed proxy another request to another HTTP server).
    */
 
-  handle();
+  //
+
+  pthread_t get_socket;
+  pthread_t server;
+
+  thread_manager();
+  pthread_create(&get_socket, NULL, get_socket_func , NULL);
 
   // release ops but in this lab, code will never get here.
-  // thread_pool.StopAll();
+  // need no join.
   mem_free();
   return 0;
 }
