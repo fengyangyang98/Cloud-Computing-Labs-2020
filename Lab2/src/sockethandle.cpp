@@ -34,9 +34,24 @@ void *get_socket_func(void *arg) {
   }
 }
 
-void error_respose(char *src, char *dest) { return; }
+void error_respose(char *src, char *dest) {
 
-void post_respose(char *src, char *dest) { return; }
+  string message = "HTTP/1.1 404 Not Found\r\n";
+  message += "Server: Lab Web Server\n";
+  message += "Content-type: text/html\n";
+  message += "Content-length: 115\n";
+  message += "\r\n";
+  message += "<html><title>404 Not Found</title><body bgcolor=ffffff>\n";
+  message += " Not Found \n";
+  message += "<hr><em>HTTP Web server</em>\n";
+  message += "</body></html>\n";
+
+  return;
+}
+
+void post_respose(char *src, char *dest) {
+  return;
+}
 
 void get_respose(char *src, char *dest) {
   
@@ -74,6 +89,9 @@ void *handle_requsts(void *arg) {
     memset(res, 0, 2048);
     int rc = newSocket.Recv(buf, 2048, TRANS_SOCKET_DFT_TIMEOUT, &size);
     PD_DEBUG(rc);
+    if(proxy_mode){
+      
+    }
     make_respose(buf, res);
     int l = strlen(res);
     newSocket.Send(res, l);

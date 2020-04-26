@@ -72,9 +72,9 @@ void GetOptLong(int argc, char *argv[]) {
   const char *optstring = ":ipPn:";
   static struct option long_options[] = {
       {"ip", required_argument, NULL, 'i'},
-      {"port", required_argument, port, 'p'},
+      {"port", required_argument, NULL, 'p'},
       {"proxy", required_argument, NULL, 'P'},
-      {"number-thread", required_argument, thread_num, 'n'},
+      {"number-thread", required_argument, NULL, 'n'},
       {0, 0, 0, 0} // 添加 {0, 0, 0, 0} 是为了防止输入空值
   };
 
@@ -90,6 +90,7 @@ void GetOptLong(int argc, char *argv[]) {
       upstream_url = new char[256];
       upstream_port = new int;
       set_upstream(argv[optind - 1], upstream_url, upstream_port);
+      proxy_mode = true;
     } else if ('p' == opt) {
       port = new int;
       *port = atoi(argv[optind - 1]);
