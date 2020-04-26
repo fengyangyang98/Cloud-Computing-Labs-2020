@@ -1,33 +1,8 @@
+#include "../fileOp.hpp"
 #include "../global.h"
 #include "../transport.hpp"
-#include "../fileOp.hpp"
-
-void *listen(void* arg) {
-  int clientSocket = (long) arg;
-  char *buf = (char *)malloc(1024);
-  memset(buf, 0, 1024);
-  pthread_detach(pthread_self());
-  TransSocket newSocket(&clientSocket);
-  while (1) {
-    cout << "1\n";
-    size_t size;
-    cout << "2\n";
-    int rc = newSocket.Recv(buf, 1024,&size);
-    cout << "3\n";
-    if (!rc) {
-      cout << "4\n";
-      printf("%s\n", buf);
-      break;
-    }
-    cout << rc << '\n';
-  }
-  newSocket.Close();
-  return 0;
-}
 
 int main(int argc, char *argv[]) {
-
-  pthread_t socket_thread;
 
   int rc = SE_OK;
   // set the port
@@ -46,7 +21,23 @@ int main(int argc, char *argv[]) {
     // accecept a connect requset
     rc = serverSock.Accept((SOCKET *)&clientSocket, NULL, NULL);
     if (rc == SE_OK) {
-      pthread_create(&socket_thread, NULL, listen, (void *)clientSocket);
+      char *buf = (char *)malloc(1024);
+      memset(buf, 0, 1024);
+      TransSocket newSocket(&clientSocket);
+      while (1) {
+        size_t size;
+        int rc = newSocket.Recv(buf, 1024, TRANS_SOCKET_DFT_TIMEOUT, NULL);
+        if (rc == SE_OK) {
+          cout << buf << "\n";
+          char *buf2 = (char *)malloc(1026);
+          memset(buf2, '1', 1024);
+          buf2[1024] = '2';
+          buf2[1025] = '\0';
+          int rc2 = newSocket.Send(buf2, 1026);
+          break;
+        }
+      }
+      newSocket.Close();
       // break;
     }
     // sleep(0.5);
