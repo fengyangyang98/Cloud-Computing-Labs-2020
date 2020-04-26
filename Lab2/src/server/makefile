@@ -6,12 +6,12 @@ LIBS = -lpthread
 
 server : $(OBJS)
 	$(CPP) $(CXXFLAGS) -o $@ $(OBJS) $(LIBS)
-	rm *.o ../*.h.gch
+	rm *.o ../*.gch
 
 server.o : server.cpp
 	$(CPP) $(CXXFLAGS) -c $^ $(LIBS)
 
-util.o : util.h util.cpp
+util.o : util.hpp util.cpp
 	$(CPP) $(CXXFLAGS) -c $^ $(LIBS)
 
 transport.o : transport.hpp transport.cpp

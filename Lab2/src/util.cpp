@@ -1,43 +1,68 @@
-#include "util.h"
+#include "util.hpp"
+#include "lock.hpp"
 
 char *ip = nullptr;
 int *port = nullptr;
 char *upstream_url = nullptr;
 int *upstream_port = nullptr;
 int *thread_num = nullptr;
+cpLock *cplock = nullptr;
 bool proxy_mode = false;
 
-#define debug
+// #define debug
 
-int get_port(char *url) {
-  int ret = 0;
-  int i = 0;
-  bool f = false;
-  for (i = 0; *(url + i) != '\0'; ++i) {
-    if (':' == *(url + i)) {
-      f = true;
-      break;
-    }
-  }
-  if (f) {
-    while (*(url + i) != '\0') {
-      ret *= 10;
-      ret += (int)(*(url + i) - '0');
-      ++i;
-    }
+void set_upstream(char *str, char *url, int *port) {
+  string url_str;
+
+  // copy https:
+  char *tmp = strtok(str, ":");
+  url_str += string(tmp);
+  url_str += ":";
+
+  // url body
+  tmp = strtok(NULL, ":");
+  url_str += string(tmp);
+  strncpy(url, url_str.c_str(), url_str.length() + 1);
+
+  // find port
+  tmp = strtok(NULL, ":");
+  if (NULL == tmp) {
+    *port = 80;
   } else {
-    ret = 80;
+    *port = atoi(tmp);
   }
-  return ret;
 }
 
-void show_config() {
-  cout << *ip << '\n';
-  cout << *port << '\n';
-  cout << *upstream_url << '\n';
-  cout << *upstream_port << '\n';
-  cout << *thread_num << '\n';
+void mem_free() {
+  delete[] ip;
+  delete port;
+  delete upstream_port;
+  delete[] upstream_url;
+  delete thread_num;
+  delete cplock;
 }
+
+namespace this_debug {
+void show_config() {
+  cout << " --------- \n";
+  if (ip) {
+    cout << "ip : " << ip << '\n';
+  }
+  if (port) {
+    cout << "port : " << *port << '\n';
+  }
+  if (upstream_url) {
+    cout << "upstream_url : " << upstream_url << '\n';
+  }
+  if (upstream_port) {
+    cout << "upstream_port : " << *upstream_port << '\n';
+  }
+  if (thread_num) {
+    cout << "thread_num : " << *thread_num << '\n';
+  }
+  cout << " --------- \n";
+}
+} // namespace this_debug
 
 void GetOptLong(int argc, char *argv[]) {
   int opt;
@@ -61,16 +86,23 @@ void GetOptLong(int argc, char *argv[]) {
                                  &option_index))) {
       break;
     }
-    if (0 == strcmp(optarg, "ip")) {
-      ip = argv[optind - 1];
+    if ('i' == opt) {
+      ip = new char[16];
+      strcpy(ip, argv[optind - 1]);
+    } else if ('P' == opt) {
+      upstream_url = new char[256];
+      upstream_port = new int;
+      set_upstream(argv[optind - 1], upstream_url, upstream_port);
+    } else if ('p' == opt) {
+      port = new int;
+      *port = atoi(argv[optind - 1]);
+    } else if ('n' == opt) {
+      thread_num = new int;
+      *thread_num = atoi(argv[optind - 1]);
     }
-    if (0 == strcmp(optarg, "proxy")) {
-      upstream_url = argv[optind - 1];
-      proxy_mode = true;
-      *upstream_port = get_port(upstream_url);
-    }
+
 #ifdef debug
-    printf("opt = %c\n", opt);       // 命令参数，亦即 -a -b -n -r
+    printf("opt = %c\n", opt);       // 命令参数
     printf("optarg = %s\n", optarg); // 参数内容
     printf("optind = %d\n", optind); // 下一个被处理的下标值
     printf("argv[optind - 1] = %s\n", argv[optind - 1]); // 参数内容

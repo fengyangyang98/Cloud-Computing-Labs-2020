@@ -1,55 +1,54 @@
 #include "../global.h"
 #include "../transport.hpp"
+#include "../fileOp.hpp"
 
-void * start(void *arg)
-{
-    char *buf = (char *)malloc(1024);
-    memset(buf, 0, 1024);
-    int rc;
-
-    printf("%d\n", arg);
-    TransSocket newSocket((SOCKET *) &arg);
+void *listen(void* arg) {
+  int clientSocket = (long) arg;
+  char *buf = (char *)malloc(1024);
+  memset(buf, 0, 1024);
+  pthread_detach(pthread_self());
+  TransSocket newSocket(&clientSocket);
+  while (1) {
+    cout << "1\n";
     size_t size;
-    rc = newSocket.Recv(buf, 1024, TRANS_SOCKET_DFT_TIMEOUT, &size);
-    printf("%d\n", size);
-    printf("%s\n", buf);
-
-    sleep(5);
-    std::string str = "nuasfdsag";
-    newSocket.Send(str.c_str(), str.length());
-
-    newSocket.Close();
+    cout << "2\n";
+    int rc = newSocket.Recv(buf, 1024,&size);
+    cout << "3\n";
+    if (!rc) {
+      cout << "4\n";
+      printf("%s\n", buf);
+      break;
+    }
+    cout << rc << '\n';
+  }
+  newSocket.Close();
+  return 0;
 }
 
-int main()
-{
-    int rc = SE_OK;
-    // set the port
-    TransSocket serverSock(12345);
+int main(int argc, char *argv[]) {
 
-    // init the socket
-    rc = serverSock.initSocket();
-    PD_DEBUG(rc);
+  pthread_t socket_thread;
 
-    // listen the port
-    rc = serverSock.bindListen();
-    PD_DEBUG(rc);
+  int rc = SE_OK;
+  // set the port
+  TransSocket serverSock(12345);
 
-    pthread_t con;
+  // init the socket
+  rc = serverSock.initSocket();
+  PD_DEBUG(rc);
 
-    while (1)
-    {
-        int clientSocket;
-        // accecept a connect requset
-        rc = serverSock.Accept((SOCKET *)&clientSocket, NULL, NULL);
-        if (rc == SE_OK)
-        {
-            void *pData = NULL ;
-            *((int *) &pData) = clientSocket;
+  // listen the port
+  rc = serverSock.bindListen();
+  PD_DEBUG(rc);
 
-            pthread_create(&con, NULL,  start, pData);
-            pthread_detach(con);
-        }
+  while (1) {
+    int clientSocket;
+    // accecept a connect requset
+    rc = serverSock.Accept((SOCKET *)&clientSocket, NULL, NULL);
+    if (rc == SE_OK) {
+      pthread_create(&socket_thread, NULL, listen, (void *)clientSocket);
+      // break;
     }
-
+    // sleep(0.5);
+  }
 }
