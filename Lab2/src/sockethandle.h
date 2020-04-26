@@ -12,4 +12,12 @@ void* get_socket_func(void* arg);
 
 void thread_manager();
 
+ /**
+   * @Author : Feng Yangyang
+   */
+
+void * socket_worker(void * arg);
+
+void * thread_scheduling(void * arg);
+
 #endif

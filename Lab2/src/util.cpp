@@ -1,10 +1,12 @@
 #include "util.hpp"
+#include "lock.hpp"
 
 char *ip = nullptr;
 int *port = nullptr;
 char *upstream_url = nullptr;
 int *upstream_port = nullptr;
 int *thread_num = nullptr;
+cpLock *cplock = nullptr;
 bool proxy_mode = false;
 
 // #define debug
@@ -37,6 +39,7 @@ void mem_free() {
   delete upstream_port;
   delete[] upstream_url;
   delete thread_num;
+  delete cplock;
 }
 
 namespace this_debug {

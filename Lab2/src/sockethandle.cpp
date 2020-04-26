@@ -1,4 +1,5 @@
 #include "sockethandle.h"
+#include "util.hpp"
 #include <regex>
 
 using std::regex;
@@ -105,3 +106,111 @@ void thread_manager() {
     pthread_create(&handles[i], NULL, handle_requsts, NULL);
   }
 }
+
+ /**
+   * @Author : Feng Yangyang
+   */
+
+// There is a circle queue.
+vector<int> socketFlag;
+// The server is one
+bool serverOn = true;
+extern cpLock * cplock;
+
+
+void * socket_worker(void * arg)
+{
+  // get the id of the worker
+  int id = (long) arg;
+
+  while(1) 
+  {
+    if(!serverOn) {
+      break;
+    }
+    // FIXME: if the the thread dosen't sleep, the program cannot be stopped.
+    sleep(0.1);
+
+    if(socketFlag[id] == 0) {
+      continue;
+    }
+    TransSocket newSocket((SOCKET *)&socketFlag[id]);
+
+    /*
+      THE METHOD DURING THE CONNECTION:
+        >>> Replace the method below:
+    */
+
+    char *buf = (char *)malloc(1024);
+    memset(buf, 0, 1024);
+
+    // recv
+    int rc = newSocket.Recv(buf, 1024, TRANS_SOCKET_DFT_TIMEOUT, NULL);
+    printf("%s\n", buf);
+
+    // send
+    std::string c = "test from thread\n";
+    newSocket.Send(c.c_str(), c.size());
+
+    free(buf);
+
+    /*
+      THE METHOD DURING THE CONNECTION
+        >>> Replace the method above:
+    */
+
+
+    newSocket.Close();
+    
+    // release the seme
+    cplock->cGet();
+    socketFlag[id] = 0;
+    cplock->cRelease();
+  }
+}
+
+void * thread_scheduling(void * arg)
+{
+  int lastFitPos = 0;
+  int rc = SE_OK;
+
+  unsigned int myPort = *port;
+
+  // set the port
+  TransSocket serverSock(myPort);
+
+  // init the socket
+  rc = serverSock.initSocket();
+  PD_DEBUG(rc);
+
+  // listen the port
+  rc = serverSock.bindListen();
+  PD_DEBUG(rc);
+
+  while(1)
+  {
+    if(!serverOn) {
+      break;
+    }
+    sleep(0.1);
+
+    int clientSocket;
+
+    // accecept a connect requset
+    rc = serverSock.Accept((SOCKET *)&clientSocket, NULL, NULL);
+
+    if (rc == SE_OK) {
+      cplock->pGet();
+      // chose the free pos
+      while(socketFlag[lastFitPos] != 0) {
+          lastFitPos = (lastFitPos + 1) % *thread_num;
+      }
+      // insert inti the circle list
+      socketFlag[lastFitPos] = clientSocket;
+      cplock->pRelease();
+    }
+
+  }
+  serverSock.Close();
+}
+

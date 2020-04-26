@@ -4,19 +4,18 @@
 
 void *listen(void* arg) {
   int clientSocket = (long) arg;
-  char *buf = (char *)malloc(100);
-  memset(buf, 0, 100);
+  char *buf = (char *)malloc(1024);
+  memset(buf, 0, 1024);
   pthread_detach(pthread_self());
   TransSocket newSocket(&clientSocket);
   while (1) {
-    int rc = newSocket.Recv(buf, 100);
-    fileOp f;
-    f.Open("./test.html");
-    int l = f.getSize();
-    char f_buf[l];
-    f.readAt(0,l,f_buf,NULL);
-    newSocket.Send(f_buf,l);
+    cout << "1\n";
+    size_t size;
+    cout << "2\n";
+    int rc = newSocket.Recv(buf, 1024,&size);
+    cout << "3\n";
     if (!rc) {
+      cout << "4\n";
       printf("%s\n", buf);
       break;
     }
@@ -38,7 +37,6 @@ int main(int argc, char *argv[]) {
   rc = serverSock.initSocket();
   PD_DEBUG(rc);
 
-<<<<<<< HEAD
   // listen the port
   rc = serverSock.bindListen();
   PD_DEBUG(rc);
@@ -53,28 +51,4 @@ int main(int argc, char *argv[]) {
     }
     // sleep(0.5);
   }
-=======
-    char *buf = (char *)malloc(1024);
-    memset(buf, 0, 1024);
-
-    while (1)
-    {
-        int clientSocket;
-        // accecept a connect requset
-        rc = serverSock.Accept((SOCKET *)&clientSocket, NULL, NULL);
-        if(rc == SE_OK) {
-            printf("%d\n",clientSocket);
-            TransSocket newSocket(&clientSocket);
-            size_t size;
-            rc = newSocket.Recv(buf, 1024, TRANS_SOCKET_DFT_TIMEOUT, &size);
-            printf("%d\n", size);
-            printf("%s\n", buf);
-            break;
-            
-            newSocket.Close();
-        }
-    }
-
-    free(buf);
->>>>>>> 7535c29447e815055da4441a7d0ff502affbc14e
 }
