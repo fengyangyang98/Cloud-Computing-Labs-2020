@@ -183,6 +183,7 @@ void post_respose(string *dest, http_c *hc, string *name, string *ID) {
   hs.chat = "OK";
   hs.kv["Server"] = "Guo's Web Server";
   hs.kv["Content-type"] = "text/html";
+  hs.kv["Connection"] = "close";
   string text = "<html><title>Post method</title><body bgcolor=ffffff>\n";
   text += "Your Name: " + *name + "\n";
   text += "ID: " + *ID + "\n";
@@ -217,7 +218,17 @@ void get_respose(string *dest, http_c *hc) {
     std::stringstream ss;
     ss << size;
     ss >> hs.kv["Content-length"];
-    hs.kv["Content-type"] = "text/html";
+    if (hc->URL.find(".html") != -1) {
+      hs.kv["Content-type"] = "text/html";
+    } else if (hc->URL.find(".html") != -1) {
+      hs.kv["Content-type"] = "application/x-jpg";
+    } else if (hc->URL.find(".html") != -1) {
+      hs.kv["Content-type"] = "text/css";
+    } else if (hc->URL.find(".html") != -1) {
+      hs.kv["Content-type"] = "application/x-javascript";
+    }
+    hs.kv["Connection"] = "close";
+    
     char tmp_buf[size + 1];
     tmp_buf[size] = '\0';
     fop.readAt(0, size, tmp_buf, NULL);
@@ -232,6 +243,7 @@ void get_respose(string *dest, http_c *hc) {
     std::stringstream ss;
     ss << text.length();
     ss >> hs.kv["Content-length"];
+    hs.kv["Connection"] = "close";
     hs.kv["Content-type"] = "text/html";
     hs.body = text;
   }
