@@ -395,7 +395,7 @@ error:
     goto done;
 }
 
-int TransSocket::Recv(char *pMsg, int length, int timeout, size_t * size)
+int TransSocket::Recv(char *pMsg, int length, int timeout, size_t * size, int flag)
 {
     int rc = SE_OK;
     int retries = 0;
@@ -442,7 +442,7 @@ int TransSocket::Recv(char *pMsg, int length, int timeout, size_t * size)
         }
     }
 
-    rc = ::recv(_fd, pMsg, length, MSG_NOSIGNAL);
+    rc = ::recv(_fd, pMsg, length, MSG_NOSIGNAL | flag);
     if (rc > 0)
     {
         length = rc;
