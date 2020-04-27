@@ -7,9 +7,11 @@
 namespace this_debug {
 static unsigned debug_counter_1 = 0;
 void break_point_1() {
-  cout << " ---- default " << debug_counter_1++ << " ---- \n";
+  // // // cout << " ---- default " << debug_counter_1++ << " ---- \n";
 }
-void break_point(int i) { cout << " ---- HANDLE " << i << " ---- \n"; }
+void break_point(int i) { 
+  // // // cout << " ---- HANDLE " << i << " ---- \n"; 
+  }
 } // namespace this_debug
 
 using std::regex;
@@ -51,25 +53,25 @@ void create_text(string *dest, http_send *hs) {
 }
 
 void show_hc(http_c *hc) {
-  cout << hc->mean << ' ' << hc->URL << ' ' << hc->version << "\r\n";
+  // // cout << hc->mean << ' ' << hc->URL << ' ' << hc->version << "\r\n";
   std::map<string, string>::iterator i = hc->kv.begin(), end = hc->kv.end();
   while (i != end) {
-    cout << i->first << ' ' << i->second << "\r\n";
+    // // cout << i->first << ' ' << i->second << "\r\n";
     i++;
   }
-  cout << hc->body << '\n';
+  // // cout << hc->body << '\n';
 }
 
 void show_hs(http_send *hs) {
-  cout << " ----- \n";
-  cout << hs->version << ' ' << hs->state << ' ' << hs->chat << "\r\n";
+  // // cout << " ----- \n";
+  // // cout << hs->version << ' ' << hs->state << ' ' << hs->chat << "\r\n";
   std::map<string, string>::iterator i = hs->kv.begin(), end = hs->kv.end();
   while (i != end) {
-    cout << i->first << ' ' << i->second << "\r\n";
+    // // cout << i->first << ' ' << i->second << "\r\n";
     i++;
   }
-  cout << hs->body << '\n';
-  cout << "----- \n";
+  // // cout << hs->body << '\n';
+  // // cout << "----- \n";
 }
 
 void apart(http_c *hc, string *src) {
@@ -108,9 +110,9 @@ void apart(http_c *hc, string *src) {
   }
 
   hc->body = table[l + 1];
-  cout << " ---- show hc ---- \n";
+  // // cout << " ---- show hc ---- \n";
   show_hc(hc);
-  cout << " ----  ---- \n";
+  // // cout << " ----  ---- \n";
 }
 
 void no_found_respose(string *dest) {
@@ -138,10 +140,10 @@ void no_found_respose(string *dest) {
 }
 
 bool find_name(string src, string *name, string *ID) {
-  cout << " ---- name ID --- \n";
+  // // cout << " ---- name ID --- \n";
   if ((src.find("Name=") == -1) || (src.find("&ID=") == -1)) {
 
-    cout << src.find("Name=") << '\n' << src.find("&ID=") << '\n';
+    // // cout << src.find("Name=") << '\n' << src.find("&ID=") << '\n';
     return false;
   }
   this_debug::break_point(222);
@@ -155,7 +157,7 @@ bool find_name(string src, string *name, string *ID) {
     }
     src = src.substr(loc + delim.size());
   }
-  cout << table.size();
+  // // cout << table.size();
   this_debug::break_point(333);
   string name_str = table[0], id_str = table[1];
   this_debug::break_point(444);
@@ -171,7 +173,7 @@ bool find_name(string src, string *name, string *ID) {
   }
   *ID = id_str;
   this_debug::break_point(666);
-  cout << "Name :" << *name << "ID :" << *ID << '\n';
+  // // cout << "Name :" << *name << "ID :" << *ID << '\n';
 
   return true;
 }
@@ -221,11 +223,13 @@ void get_respose(string *dest, http_c *hc) {
     if (hc->URL.find(".html") != -1) {
       hs.kv["Content-type"] = "text/html";
     } else if (hc->URL.find(".jpg") != -1) {
-      hs.kv["Content-type"] = "application/x-jpg";
+      hs.kv["Content-type"] = "image/jpeg";
     } else if (hc->URL.find(".css") != -1) {
       hs.kv["Content-type"] = "text/css";
     } else if (hc->URL.find(".js") != -1) {
       hs.kv["Content-type"] = "application/x-javascript";
+    } else if (hc->URL.find(".woff") != -1) {
+      hs.kv["Content-type"] = "application/font-woff";
     }
     hs.kv["Connection"] = "close";
     
@@ -273,9 +277,9 @@ void make_respose(string *dest, string *src) {
   this_debug::break_point(1);
   http_c hc;
   this_debug::break_point_1();
-  cout << *src << "\n";
+  // // cout << *src << "\n";
   if (src->empty()) {
-    cout << " it is empty ! \n";
+    // // cout << " it is empty ! \n";
   }
   apart(&hc, src);
   this_debug::break_point_1();
@@ -352,6 +356,8 @@ void *socket_worker(void *arg) {
       if(rc) break;
     }
 
+    cout << recv_buf << std::endl;
+
     // PD_DEBUG(rc);
     if (!proxy_mode) {
       // this_debug::break_point(1);
@@ -394,11 +400,11 @@ void *socket_worker(void *arg) {
         if(c_rc) break;
       }
 
-      cout << send_buf << '\n';
       clientSock.Close();
     }
 
     newSocket.Send(send_buf.c_str(), send_buf.length());
+    cout << send_buf << '\n';
 
     /*
       THE METHOD DURING THE CONNECTION

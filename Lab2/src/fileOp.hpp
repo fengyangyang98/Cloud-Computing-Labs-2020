@@ -32,6 +32,7 @@
 #define S_FILE_OP_OPEN_EXISTING (((unsigned int)1) << 3)
 #define S_FILE_OP_OPEN_ALWAYS (((unsigned int)1) << 4)
 #define S_FILE_OP_OPEN_TRUNC (((unsigned int)1) << 5)
+#define S_FILE_OP_OPEN_BINARY (((unsigned int)1) << 6)
 
 #define S_INVALID_HANDLE_FD_VALUE (-1)
 #define S_OK 0
@@ -105,6 +106,10 @@ int fileOp::Open(const char *path, unsigned int options) {
 
   if (options & S_FILE_OP_OPEN_TRUNC) {
     mode |= O_TRUNC;
+  }
+
+  if(options & S_FILE_OP_OPEN_BINARY) {
+    // mode |= 
   }
 
   // keep trying to open the file when
