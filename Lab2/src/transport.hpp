@@ -6,7 +6,7 @@
 #define SOCKET_GETLASTERROR         errno
 #define TRANS_MAX_HOSTNAME          NI_MAXHOST
 #define TRANS_MAX_SERVICENAME       NI_MAXSERV
-#define TRANS_SOCKET_DFT_TIMEOUT    10000
+#define TRANS_SOCKET_DFT_TIMEOUT    100000000
 #define TRANS_EAGAIN	            EINPROGRESS
 #define TRANS_EINTR	                EINTR
 #define MAX_RECV_RETRIES            5
@@ -73,7 +73,7 @@ public:
              size_t * size = nullptr,
              int timeout=TRANS_SOCKET_DFT_TIMEOUT,
              int flag=0);
-    int Recv(char * pMsg, int length, int timeout, size_t * size = nullptr);
+    int Recv(char * pMsg, int length, int timeout, size_t * size = nullptr, int flag = 0);
 
     // get one connecting request in the waiting queue, and create a
     // new socket

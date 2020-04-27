@@ -323,6 +323,8 @@ void *socket_worker(void *arg) {
       if (!rc) {
         recv_buf += tmp;
       }
+      rc = newSocket.Recv(tmp, 1, 100, NULL, MSG_PEEK);
+      if(rc) break;
     }
 
     // PD_DEBUG(rc);
@@ -346,15 +348,26 @@ void *socket_worker(void *arg) {
       //   clientSock.disableNagle();
       clientSock.Send(recv_buf.c_str(), recv_buf.length());
 
+
+      /*
+        1. Get the Packet
+        2. Using the short timeout to check the packet in the buf
+      */
+
       while (!c_rc) {
         size_t size;
         char tmp[1024];
         memset(tmp, 0, 1024);
         c_rc = clientSock.Recv(tmp, 1024, TRANS_SOCKET_DFT_TIMEOUT, &size);
+
         if (!c_rc) {
           send_buf += tmp;
         }
+
+        c_rc = clientSock.Recv(tmp, 1, 100, NULL, MSG_PEEK);
+        if(c_rc) break;
       }
+
       cout << send_buf << '\n';
       clientSock.Close();
     }
