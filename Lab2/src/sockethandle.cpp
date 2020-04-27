@@ -356,11 +356,12 @@ void *socket_worker(void *arg) {
       clientSock.initSocket();
       // connect
       c_rc = clientSock.Connect();
-      assert(c_rc == SE_OK);
-      // disable the small package to transport
-      //   clientSock.disableNagle();
-      clientSock.Send(recv_buf.c_str(), recv_buf.length());
+      if(c_rc != SE_OK)
+        goto done;
 
+      c_rc = clientSock.Send(recv_buf.c_str(), recv_buf.length());
+      if(c_rc != SE_OK)
+        goto done;
 
       /*
         1. Get the Packet
@@ -392,6 +393,7 @@ void *socket_worker(void *arg) {
         >>> Replace the method above:
     */
 
+done:
     newSocket.Close();
 
     // release the seme

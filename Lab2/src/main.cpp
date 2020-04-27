@@ -46,7 +46,6 @@ int main(int argc, char *argv[]) {
 
   string tmp;
   while (std::cin >> tmp) {
-    sleep(1);
   }
 
   pthread_join(sheduling, NULL);
