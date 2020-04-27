@@ -51,7 +51,8 @@ using std::vector;
 #define SE_TIMEOUT -1
 #define SE_EINTR -2
 #define SE_EAGAIN -3
-
+#define SE_CL_SHUTDOEN -4
+#define SE_NETWORK -5
 // debug util
 #define PD_DEBUG(cond)                                                         \
   do {                                                                         \
