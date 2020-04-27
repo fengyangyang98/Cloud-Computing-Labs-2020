@@ -285,6 +285,8 @@ int TransSocket::Send(const char *pMsg, int length,
         if (rc == -1)
         {
             PD_DEBUG_PRINTF("Failed to send, rc = %d\n", SOCKET_GETLASTERROR);
+            rc = SE_NETWORK;
+            goto error;
         }
 
         length -= rc;
@@ -449,11 +451,11 @@ int TransSocket::Recv(char *pMsg, int length, int timeout, size_t * size)
         
     } else if (rc == 0) {
         PD_DEBUG_PRINTF("Peer unexpected shutdown\n");
-        rc = SE_TIMEOUT;
+        rc = SE_CL_SHUTDOEN;
         goto done;
 
     } else {
-        rc = SOCKET_GETLASTERROR;
+        rc = SE_NETWORK;
         if (((rc == SE_EAGAIN) || (rc == EWOULDBLOCK)) && (_timeout > 0))
         {
             PD_DEBUG_PRINTF("Revv() timeout, rc = %d\n", rc);
