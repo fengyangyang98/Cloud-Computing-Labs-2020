@@ -29,15 +29,23 @@ int main(int argc, char *argv[]) {
         int rc = newSocket.Recv(buf, 1024, TRANS_SOCKET_DFT_TIMEOUT, NULL);
         if (rc == SE_OK) {
           cout << buf << "\n";
-          char *buf2 = (char *)malloc(1026);
-          memset(buf2, '1', 1024);
-          buf2[1024] = '2';
-          buf2[1025] = '\0';
-          int rc2 = newSocket.Send(buf2, 1026);
+          string dest = "HTTP/1.1 404 Not Found\r\n";
+
+          dest += "Server: Lab Web Server\n";
+          dest += "Content-type: text/html\n";
+          dest += "Content-length: 112\n";
+
+          dest += "\r\n";
+
+          dest += "<html><title>404 Not Found</title><body bgcolor=ffffff>\n";
+          dest += " Not Found \n";
+          dest += "<hr><em>HTTP Web server</em>\n";
+          dest += "</body></html>\n";
+          int rc2 = newSocket.Send(dest.c_str(), dest.length());
           break;
         }
       }
-      newSocket.Close();
+      // newSocket.Close();
       // break;
     }
     // sleep(0.5);

@@ -12,24 +12,22 @@ bool proxy_mode = false;
 // #define debug
 
 void set_upstream(char *str, char *url, int *port) {
-  string url_str;
-
-  // copy https:
-  char *tmp = strtok(str, ":");
-  url_str += string(tmp);
-  url_str += ":";
-
-  // url body
-  tmp = strtok(NULL, ":");
-  url_str += string(tmp);
-  strncpy(url, url_str.c_str(), url_str.length() + 1);
-
-  // find port
-  tmp = strtok(NULL, ":");
-  if (NULL == tmp) {
-    *port = 80;
-  } else {
-    *port = atoi(tmp);
+  const char *d = ":";
+  char *p;
+  string message[3];
+  int i = 0;
+  p = strtok(str, d);
+  while (p) {
+    message[i++] = string(p);
+    p = strtok(NULL, d);
+  }
+  if (i==2){
+    message[0].copy(url,message[0].length());
+    *port=atoi(message[1].c_str());
+  } else if(i==3) {
+    message[0] += ":" + message[1] ;
+    message[0].copy(url,message[0].length());
+    *port=atoi(message[2].c_str());
   }
 }
 

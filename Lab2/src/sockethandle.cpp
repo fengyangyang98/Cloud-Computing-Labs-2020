@@ -1,6 +1,18 @@
 #include "sockethandle.h"
+#include "fileOp.hpp"
 #include "util.hpp"
 #include <regex>
+#include "sstream"
+
+namespace this_debug {
+static unsigned debug_counter_1 = 0;
+void break_point_1() {
+  cout << " ---- default " << debug_counter_1++ << " ---- \n";
+}
+void break_point(int i){
+  cout << " ---- HANDLE " << i << " ---- \n";
+}
+} // namespace this_debug
 
 using std::regex;
 
@@ -8,130 +20,128 @@ queue<int> client_socket_queue;
 exclusiveLock client_socket_lock;
 cpLock queueLock;
 
-void *get_socket_func(void *arg) {
-  int rc = SE_OK;
-  // set the port
-  TransSocket serverSock(*port);
-
-  // init the socket
-  rc = serverSock.initSocket();
-  PD_DEBUG(rc);
-
-  // listen the port
-  rc = serverSock.bindListen();
-  PD_DEBUG(rc);
-
-  while (1) {
-    long client_socket;
-    // accecept a connect requset
-    client_socket_lock.get();
-    rc = serverSock.Accept((SOCKET *)&client_socket, NULL, NULL);
-    if (rc == SE_OK) {
-      queueLock.cGet();
-      client_socket_queue.push(client_socket);
-      queueLock.cRelease();
-    }
-    client_socket_lock.release();
-  }
-}
-
-void error_respose(char *src, char *dest) {
-
-  string message = "HTTP/1.1 404 Not Found\r\n";
-  message += "Server: Lab Web Server\n";
-  message += "Content-type: text/html\n";
-  message += "Content-length: 115\n";
-  message += "\r\n";
-  message += "<html><title>404 Not Found</title><body bgcolor=ffffff>\n";
-  message += " Not Found \n";
-  message += "<hr><em>HTTP Web server</em>\n";
-  message += "</body></html>\n";
-
-  return;
-}
-
-void post_respose(char *src, char *dest) {
-  return;
-}
-
-void get_respose(char *src, char *dest) {
+void error_respose(string *dest, string *src) {
+  *dest = "HTTP/1.1 404 Not Found\r\n";
+  *dest += "Server: Lab Web Server\n";
+  *dest += "Content-type: text/html\n";
+  *dest += "Content-length: 115";
+  fileOp fop;
+  fop.Open("./404.html",S_FILE_OP_READ_ONLY);
+  size_t size = fop.getSize();
+  dest += size;
+  *dest += "\n\r\n";
   
+  char buf[size];
+  buf[size - 1] = '\0';
+  fop.readAt(0, size, buf, NULL);
+  *dest += buf;
+  fop.Close();
   return;
 }
 
-void make_respose(char *src, char *dest) {
-  regex get("GET");
-  regex post("POST");
-  regex version("HTTP/1.1");
-  if (regex_match(src, version)) {
-    if (regex_match(src, get)) {
-      get_respose(src, dest);
-    } else if (regex_match(src, post)) {
-      post_respose(src, dest);
-    }
-  } else {
-    error_respose(src, dest);
-  }
+void post_respose(string *dest, string *src) {
+  *dest = "HTTP/1.1 404 Not Found\r\n";
+
+  *dest += "Server: Lab Web Server\n";
+  *dest += "Content-type: text/html\n";
+  *dest += "Content-length: 115\n";
+  *dest += "\r\n";
   return;
 }
 
-void *handle_requsts(void *arg) {
-  while (1) {
+struct http_c {
+  string mean;
+  string URL;
+  string version;
 
-    queueLock.pGet();
-    int client_socket = client_socket_queue.front();
-    client_socket_queue.pop();
-    queueLock.pRelease();
+  std::map<string, string> kv;
 
-    TransSocket newSocket(&client_socket);
-    size_t size;
-    char buf[2048], res[2048];
-    memset(buf, 0, 2048);
-    memset(res, 0, 2048);
-    int rc = newSocket.Recv(buf, 2048, TRANS_SOCKET_DFT_TIMEOUT, &size);
-    PD_DEBUG(rc);
-    if(proxy_mode){
-      
+  string body;
+};
+
+void show_hc(http_c* hc){
+  cout << hc->mean << ' ' << hc->URL << ' ' << hc->version << "\r\n";
+  std::map<string, string>::iterator i = hc->kv.begin(), end = hc->kv.end();
+  while(i != end) {
+    cout << i->first << ' ' << i->second << "\r\n";
+    i++;
+  }
+  cout << hc->body << '\n';
+}
+
+void apart(http_c *hc, string *src) {
+  int loc;
+  string delim = "\r\n";
+  this_debug::break_point_1();
+  vector<string> table;
+  while ((loc = (*src).find(delim)) != string::npos) {
+    if (loc != 0) {
+      table.push_back((*src).substr(0, loc));
     }
-    make_respose(buf, res);
-    int l = strlen(res);
-    newSocket.Send(res, l);
-
+    *src = (*src).substr(loc + delim.size());
   }
+  this_debug::break_point_1();
+  hc->body = table.back();
+  this_debug::break_point_1();
+  delim = " ";
+  vector<string> request_line;
+  
+  while ((loc = table[0].find(delim)) != string::npos) {
+    if (loc != 0) {
+      request_line.push_back(table[0].substr(0, loc));
+    }
+    *src = table[0].substr(loc + delim.size());
+  }
+
+  this_debug::break_point_1();
+  hc->mean=request_line[0];
+  hc->URL=request_line[1];
+  hc->version=request_line[2];
+  this_debug::break_point_1();
+  int l = table.size()-1;
+  this_debug::break_point_1();
+  for (int i = 1;i < l;i++) {
+    string key,val;
+    std::stringstream ss(table[i]);
+    ss >> key >> val;
+    hc->kv[key] = val;
+  }
+  this_debug::break_point_1();
+  show_hc(hc);
 }
 
-void thread_manager() {
-  pthread_t handles[*thread_num - 2];
-  for (int i = 0; i < *thread_num - 2; ++i) {
-    pthread_create(&handles[i], NULL, handle_requsts, NULL);
-  }
+void get_respose(string *dest, string *src) { return; }
+
+void make_respose(string *dest, string *src) {
+  error_respose(dest,src);
+  // http_c hc;
+  // this_debug::break_point(3);
+  // apart(&hc,src);
+  // this_debug::break_point(4);
 }
 
- /**
-   * @Author : Feng Yangyang
-   */
+/**
+ * @Author : Feng Yangyang
+ */
 
 // There is a circle queue.
 vector<int> socketFlag;
 // The server is one
 bool serverOn = true;
-extern cpLock * cplock;
+extern cpLock *cplock;
 
-
-void * socket_worker(void * arg)
-{
+void *socket_worker(void *arg) {
   // get the id of the worker
-  int id = (long) arg;
+  int id = (long)arg;
 
-  while(1) 
-  {
-    if(!serverOn) {
+  while (1) {
+    if (!serverOn) {
       break;
     }
     // FIXME: if the the thread dosen't sleep, the program cannot be stopped.
     sleep(0.1);
 
-    if(socketFlag[id] == 0) {
+    if (socketFlag[id] == 0) {
       continue;
     }
     TransSocket newSocket((SOCKET *)&socketFlag[id]);
@@ -141,27 +151,62 @@ void * socket_worker(void * arg)
         >>> Replace the method below:
     */
 
-    char *buf = (char *)malloc(1024);
-    memset(buf, 0, 1024);
+    size_t size;
+    string recv_buf, send_buf;
+    int rc = SE_OK;
 
-    // recv
-    int rc = newSocket.Recv(buf, 1024, TRANS_SOCKET_DFT_TIMEOUT, NULL);
-    printf("%s\n", buf);
+    while (!rc) {
+      size_t size;
+      char tmp[1024];
+      memset(tmp, 0, 1024);
+      rc = newSocket.Recv(tmp, 1024, TRANS_SOCKET_DFT_TIMEOUT, &size);
+      if (!rc) {
+        recv_buf += tmp;
+      }
+    }
 
-    // send
-    std::string c = "test from thread\n";
-    newSocket.Send(c.c_str(), c.size());
+    // PD_DEBUG(rc);
+    if (!proxy_mode) {
+      this_debug::break_point(1);
+      make_respose(&send_buf, &recv_buf);
+      this_debug::break_point(2);
+    } else {
+      int c_rc = SE_OK;
+      TransSocket clientSock;
+      // set the port
+      clientSock.setAddress(upstream_url, *upstream_port);
 
-    free(buf);
+      // init the socket
+      clientSock.initSocket();
+      // connect
+      c_rc = clientSock.Connect();
+      assert(c_rc == SE_OK);
+      // disable the small package to transport
+      //   clientSock.disableNagle();
+      clientSock.Send(recv_buf.c_str(), recv_buf.length());
+
+      while (!c_rc) {
+        size_t size;
+        char tmp[1024];
+        memset(tmp, 0, 1024);
+        c_rc = clientSock.Recv(tmp, 1024, TRANS_SOCKET_DFT_TIMEOUT, &size);
+        if (!c_rc) {
+          send_buf += tmp;
+        }
+      }
+      cout << send_buf << '\n';
+      clientSock.Close();
+    }
+
+    newSocket.Send(send_buf.c_str(), send_buf.length());
 
     /*
       THE METHOD DURING THE CONNECTION
         >>> Replace the method above:
     */
 
-
     newSocket.Close();
-    
+
     // release the seme
     cplock->cGet();
     socketFlag[id] = 0;
@@ -169,8 +214,7 @@ void * socket_worker(void * arg)
   }
 }
 
-void * thread_scheduling(void * arg)
-{
+void *thread_scheduling(void *arg) {
   int lastFitPos = 0;
   int rc = SE_OK;
 
@@ -187,9 +231,8 @@ void * thread_scheduling(void * arg)
   rc = serverSock.bindListen();
   PD_DEBUG(rc);
 
-  while(1)
-  {
-    if(!serverOn) {
+  while (1) {
+    if (!serverOn) {
       break;
     }
     sleep(0.1);
@@ -202,15 +245,13 @@ void * thread_scheduling(void * arg)
     if (rc == SE_OK) {
       cplock->pGet();
       // chose the free pos
-      while(socketFlag[lastFitPos] != 0) {
-          lastFitPos = (lastFitPos + 1) % *thread_num;
+      while (socketFlag[lastFitPos] != 0) {
+        lastFitPos = (lastFitPos + 1) % *thread_num;
       }
       // insert inti the circle list
       socketFlag[lastFitPos] = clientSocket;
       cplock->pRelease();
     }
-
   }
   serverSock.Close();
 }
-

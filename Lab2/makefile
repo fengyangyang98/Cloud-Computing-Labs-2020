@@ -1,7 +1,7 @@
 VPATH =./src
 CPP = g++
 CXXFLAGS = -std=c++11 -O2 -g 
-OBJS = main.o util.o transport.o multithread.o # cthreadpool.o
+OBJS = main.o util.o transport.o sockethandle.o # cthreadpool.o
 LIBS = -lpthread
 
 httpserver : $(OBJS)
@@ -17,10 +17,7 @@ util.o : util.hpp util.cpp
 transport.o : transport.hpp transport.cpp
 	$(CPP) $(CXXFLAGS) -c $^ $(LIBS)
 
-# cthreadpool.o : cthreadpool.h cthreadpool.cpp
-# 	$(comdo)
-
-multithread.o : multithread.h multithread.cpp
+sockethandle.o : sockethandle.h sockethandle.cpp
 	$(CPP) $(CXXFLAGS) -c $^ $(LIBS)
 
 PHONY: clean

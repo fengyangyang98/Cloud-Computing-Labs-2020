@@ -26,8 +26,6 @@ int main(int argc, char *argv[]) {
     rc = clientSock.Recv(buffer, 1024, TRANS_SOCKET_DFT_TIMEOUT, &size);
     if (!rc){
         cout << buffer;
-        // cout << '\n' << size << '\n';
-        // break;
     }
   }
   
