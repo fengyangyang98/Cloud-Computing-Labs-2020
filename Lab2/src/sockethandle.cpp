@@ -220,11 +220,11 @@ void get_respose(string *dest, http_c *hc) {
     ss >> hs.kv["Content-length"];
     if (hc->URL.find(".html") != -1) {
       hs.kv["Content-type"] = "text/html";
-    } else if (hc->URL.find(".html") != -1) {
+    } else if (hc->URL.find(".jpg") != -1) {
       hs.kv["Content-type"] = "application/x-jpg";
-    } else if (hc->URL.find(".html") != -1) {
+    } else if (hc->URL.find(".css") != -1) {
       hs.kv["Content-type"] = "text/css";
-    } else if (hc->URL.find(".html") != -1) {
+    } else if (hc->URL.find(".js") != -1) {
       hs.kv["Content-type"] = "application/x-javascript";
     }
     hs.kv["Connection"] = "close";
