@@ -96,13 +96,6 @@ void apart(http_c *hc, string *src) {
 
   hc->mean = request_line[0];
   hc->URL = request_line[1];
-  if (hc->URL == "/") {
-    hc->URL = "./index.html";
-  } else if (hc->URL.find(".") == -1) {
-    hc->URL = "." + hc->URL + "/index.html";
-  } else {
-    hc->URL = "." + hc->URL;
-  }
   hc->version = request_line[2];
 
   int l = table.size() - 2;
@@ -128,7 +121,11 @@ void no_found_respose(string *dest) {
   fileOp fop;
   fop.Open("./404.html", S_FILE_OP_READ_ONLY);
   size_t size = fop.getSize();
-  dest += size;
+  std::stringstream ss;
+  ss << size;
+  string tmp;
+  ss >> tmp;
+  *dest += tmp;
   *dest += "\n\r\n";
 
   char buf[size + 1];
@@ -141,36 +138,42 @@ void no_found_respose(string *dest) {
 }
 
 bool find_name(string src, string *name, string *ID) {
-  bool ret = (src.find("Name=") != -1) && (src.find("&ID=") != -1);
-  if (!ret) {
+  cout << " ---- name ID --- \n";
+  if ((src.find("Name=") == -1) || (src.find("&ID=") == -1)) {
+
+    cout << src.find("Name=") << '\n' << src.find("&ID=") << '\n';
     return false;
   }
-
+  this_debug::break_point(222);
   int loc;
   string delim = "&";
   vector<string> table;
+  src += "&";
   while ((loc = src.find(delim)) != string::npos) {
     if (loc != 0) {
       table.push_back(src.substr(0, loc));
     }
     src = src.substr(loc + delim.size());
   }
-
+  cout << table.size();
+  this_debug::break_point(333);
   string name_str = table[0], id_str = table[1];
-
-   delim = "=";
+  this_debug::break_point(444);
+  delim = "=";
   while ((loc = name_str.find(delim)) != string::npos) {
     name_str = name_str.substr(loc + delim.size());
   }
   *name = name_str;
-
+  this_debug::break_point(555);
   delim = "=";
   while ((loc = id_str.find(delim)) != string::npos) {
     id_str = id_str.substr(loc + delim.size());
   }
   *ID = id_str;
+  this_debug::break_point(666);
+  cout << "Name :" << *name << "ID :" << *ID << '\n';
 
-  return ret;
+  return true;
 }
 
 void post_respose(string *dest, http_c *hc, string *name, string *ID) {
@@ -184,7 +187,9 @@ void post_respose(string *dest, http_c *hc, string *name, string *ID) {
   text += "Your Name: " + *name + "\n";
   text += "ID: " + *ID + "\n";
   text += "<hr><em>Http Web server</em>\n</body></html>\n";
-  hs.kv["Content-length"] = text.length();
+  std::stringstream ss;
+  ss << text.length();
+  ss >> hs.kv["Content-length"];
   hs.body = text;
   create_text(dest, &hs);
   return;
@@ -193,7 +198,15 @@ void post_respose(string *dest, http_c *hc, string *name, string *ID) {
 void get_respose(string *dest, http_c *hc) {
   http_send hs;
   hs.version = "HTTP/1.1";
-  string file_url = hc->URL;
+  string file_url;
+  if (hc->URL == "/") {
+    file_url = "./index.html";
+  } else if (hc->URL.find(".") == -1) {
+    file_url = "." + hc->URL + "/index.html";
+  } else {
+    file_url = "." + hc->URL;
+  }
+
   fileOp fop;
   fop.Open(file_url.c_str(), S_FILE_OP_READ_ONLY);
   if (fop.isValid()) {
