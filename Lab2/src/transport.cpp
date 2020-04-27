@@ -41,7 +41,7 @@ TransSocket::TransSocket()
 
 
 // create a listening socket
-TransSocket::TransSocket(unsigned int port, int timeout)
+TransSocket::TransSocket(unsigned int port, const char *pHostName, int timeout)
 {
     _init = false;
     _fd = 0;
@@ -52,7 +52,16 @@ TransSocket::TransSocket(unsigned int port, int timeout)
     // IPv4
     _sockAddress.sin_family = AF_INET; 
     // get any port as connecting
-    _sockAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+    if(pHostName) {
+        hostent *hp;
+        if ((hp = gethostbyname(pHostName))) {
+            _sockAddress.sin_addr.s_addr = *((int *)hp->h_addr_list[0]);
+        }
+        else {
+            _sockAddress.sin_addr.s_addr = inet_addr(pHostName);
+        }
+    }
+    else _sockAddress.sin_addr.s_addr = htonl(INADDR_ANY);
     // get host port
     _sockAddress.sin_port = htons(port);
     _addressLen = sizeof(_sockAddress);
