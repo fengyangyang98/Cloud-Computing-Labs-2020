@@ -14,7 +14,7 @@ extern cpLock *cplock;
 int main(int argc, char *argv[]) {
   // init
   GetOptLong(argc, argv);
-  this_debug::show_config();
+  // this_debug::show_config();
   if (nullptr == thread_num) {
     thread_num = new int(get_nprocs_conf());
   }
