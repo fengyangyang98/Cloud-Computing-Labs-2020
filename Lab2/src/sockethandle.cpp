@@ -236,7 +236,7 @@ void get_respose(string *dest, http_c *hc) {
     char tmp_buf[size + 1];
     tmp_buf[size] = '\0';
     fop.readAt(0, size, tmp_buf, NULL);
-    hs.body = string(tmp_buf);
+    hs.body = string(tmp_buf, size);
   } else {
     hs.state = "404";
     hs.chat = "Not Found";

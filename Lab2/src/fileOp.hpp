@@ -109,7 +109,7 @@ int fileOp::Open(const char *path, unsigned int options) {
   }
 
   if(options & S_FILE_OP_OPEN_BINARY) {
-    // mode |= 
+    
   }
 
   // keep trying to open the file when
