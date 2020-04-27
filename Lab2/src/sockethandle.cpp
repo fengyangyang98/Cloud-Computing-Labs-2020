@@ -410,7 +410,7 @@ void *thread_scheduling(void *arg) {
   unsigned int myPort = *port;
 
   // set the port
-  TransSocket serverSock(myPort);
+  TransSocket serverSock(myPort, ip);
 
   // init the socket
   rc = serverSock.initSocket();

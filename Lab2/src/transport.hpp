@@ -34,7 +34,7 @@ public:
     TransSocket();
 
     // create a listening socket
-    TransSocket(unsigned int port, int timeout=0, const char *pHostName = nullptr);
+    TransSocket(unsigned int port, const char *pHostName = nullptr,  int timeout=0);
     
     // create a connection socket
     TransSocket(const char *pHostName, unsigned int port, 

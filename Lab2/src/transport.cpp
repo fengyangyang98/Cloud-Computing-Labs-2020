@@ -41,7 +41,7 @@ TransSocket::TransSocket()
 
 
 // create a listening socket
-TransSocket::TransSocket(unsigned int port, int timeout, const char *pHostName)
+TransSocket::TransSocket(unsigned int port, const char *pHostName, int timeout)
 {
     _init = false;
     _fd = 0;
