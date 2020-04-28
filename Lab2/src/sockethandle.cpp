@@ -482,7 +482,7 @@ void *socket_worker(void *arg)
         }
 
         if(content_length != -1) {
-          if(send_buf.size() - content_pos - 3 >= content_length) {
+          if(send_buf.size() - content_pos - 4 >= content_length) {
             break;
           }
         }
