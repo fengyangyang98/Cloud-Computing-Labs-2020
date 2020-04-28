@@ -117,6 +117,7 @@ TransSocket::TransSocket(SOCKET *sock, int timeout)
         PD_DEBUG_PRINTF("Fialed to get peer name, error = %d\n", SOCKET_GETLASTERROR);
     }
 
+
 done:
     return;
 error:
@@ -140,6 +141,7 @@ int TransSocket::initSocket()
         if (_fd == -1)
         {
             PD_DEBUG_PRINTF("Failed to initialize socket, error = %d\n", SOCKET_GETLASTERROR);
+            goto error;
         }
         _init = true;
         setTimeout(_timeout);
@@ -215,8 +217,10 @@ error:
 void TransSocket::Close()
 {
     if(_init) {
+        
         int i = 0;
         i = ::close(_fd);
+        _fd = 0;
         if (i < 0) {
             i = -1;
         }
@@ -459,7 +463,7 @@ int TransSocket::Recv(char *pMsg, int length, int timeout, size_t * size, int fl
         rc = SE_OK;
         
     } else if (rc == 0) {
-        PD_DEBUG_PRINTF("Peer unexpected shutdown\n");
+        // PD_DEBUG_PRINTF("Peer unexpected shutdown\n");
         rc = SE_CL_SHUTDOEN;
         goto done;
 
@@ -568,6 +572,7 @@ int TransSocket::setSocketLi(int lOnOff, int linger)
 {
     int rc = SE_OK;
     struct linger _linger;
+    memset(&_linger, 0, sizeof(linger));
 
     _linger.l_linger = lOnOff;
     _linger.l_linger = linger;

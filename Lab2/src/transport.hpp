@@ -6,7 +6,7 @@
 #define SOCKET_GETLASTERROR         errno
 #define TRANS_MAX_HOSTNAME          NI_MAXHOST
 #define TRANS_MAX_SERVICENAME       NI_MAXSERV
-#define TRANS_SOCKET_DFT_TIMEOUT    100000000
+#define TRANS_SOCKET_DFT_TIMEOUT    10000000
 #define TRANS_EAGAIN	            EINPROGRESS
 #define TRANS_EINTR	                EINTR
 #define MAX_RECV_RETRIES            5
@@ -63,6 +63,8 @@ public:
     // return the status of connection
     bool isConnected();
 
+    void clearBuf();
+
     // send massage
     int Send(const char * pMsg, int length,
              int timeout=TRANS_SOCKET_DFT_TIMEOUT,
@@ -79,7 +81,7 @@ public:
     // new socket
     int Accept(SOCKET * sock, sockaddr * addr, 
                socklen_t * addrlen,
-               int timeout=TRANS_SOCKET_DFT_TIMEOUT);
+               int timeout=100000);
     
     // diable the small segment send
     int disableNagle();

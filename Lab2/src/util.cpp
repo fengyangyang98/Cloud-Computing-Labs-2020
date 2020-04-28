@@ -85,10 +85,12 @@ void GetOptLong(int argc, char *argv[]) {
       break;
     }
     if ('i' == opt) {
-      ip = new char[16];
+      ip = new char[17];
       strcpy(ip, argv[optind - 1]);
+      ip[16] = 0;
     } else if ('P' == opt) {
       upstream_url = new char[256];
+      memset(upstream_url, 0, 256);
       upstream_port = new int;
       set_upstream(argv[optind - 1], upstream_url, upstream_port);
       proxy_mode = true;
