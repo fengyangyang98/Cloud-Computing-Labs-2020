@@ -459,6 +459,9 @@ void *socket_worker(void *arg)
         2. Using the short timeout to check the packet in the buf
       */
 
+      int length_pos = -1;
+      int content_pos = -1;
+      int content_length = -1;
       while (!c_rc)
       {
         size_t size;
@@ -471,9 +474,22 @@ void *socket_worker(void *arg)
           send_buf.append(tmp, size);
         }
 
-        c_rc = clientSock.Recv(tmp, 1, 100, NULL, MSG_PEEK);
-        if (c_rc)
-          break;
+        if(content_pos == -1) {
+          if((content_pos = send_buf.find("\r\n\r\n") )!= -1) {
+            length_pos = send_buf.find("Content-length: ");
+            content_length = atoi(send_buf.c_str() + length_pos + 16);
+          }
+        }
+
+        if(content_length != -1) {
+          if(send_buf.size() - content_pos - 3 >= content_length) {
+            break;
+          }
+        }
+
+        // c_rc = clientSock.Recv(tmp, 1, 100, NULL, MSG_PEEK);
+        // if (c_rc)
+        //   break;
       }
 
       clientSock.Close();
