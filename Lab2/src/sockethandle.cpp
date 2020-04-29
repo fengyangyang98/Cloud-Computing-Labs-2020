@@ -477,6 +477,15 @@ void *socket_worker(void *arg)
         if(content_pos == -1) {
           if((content_pos = send_buf.find("\r\n\r\n") )!= -1) {
             length_pos = send_buf.find("Content-length: ");
+            if(length_pos == -1) {
+              length_pos = send_buf.find("Content-Length: ");
+              if(length_pos == -1) {
+                length_pos = send_buf.find("content-length: ");
+                  if(length_pos == -1) {
+                    length_pos = send_buf.find("content-Length: ");
+                  }
+              }
+            }
             content_length = atoi(send_buf.c_str() + length_pos + 16);
           }
         }
