@@ -11,23 +11,72 @@ bool proxy_mode = false;
 
 // #define debug
 
+// void set_upstream(char *str, char *url, int *port) {
+//   std::string s(str);
+//   if(s.find("http") != -1) {
+//     int first = s.find(":");
+//     int second = s.find(":", first + 1);
+//     if(second != -1) {
+//       s.copy(url, second - first - 1, first + 1);
+//       *port = atoi(s.c_str() + first + 1);
+//     } else {
+//       s.copy(url, s.size() - first - 1, first + 1);
+//       *port = 80;
+//     }
+//   } else {
+//     int first = s.find(":");
+//     if(first != -1)
+//     {
+//       s.copy(url, s.size() - first);
+//       *port = atoi(s.c_str() + first + 1);
+//     }
+//     else {
+//       s.copy(url, s.size());
+//       *port = 80;
+//     }
+//   }
+// }
+
 void set_upstream(char *str, char *url, int *port) {
-  const char *d = ":";
-  char *p;
-  string message[3];
-  int i = 0;
-  p = strtok(str, d);
-  while (p) {
-    message[i++] = string(p);
-    p = strtok(NULL, d);
+  int loc;
+  string delim = ":", tmp = str;
+  tmp += ":";
+  vector<string> table;
+  while ((loc = tmp.find(delim)) != string::npos) {
+    if (loc != 0) {
+      table.push_back(tmp.substr(0, loc));
+    }
+    tmp = tmp.substr(loc + delim.size());
   }
-  if (i==2){
-    message[0].copy(url,message[0].length());
-    *port=atoi(message[1].c_str());
-  } else if(i==3) {
-    message[0] += ":" + message[1] ;
-    message[0].copy(url,message[0].length());
-    *port=atoi(message[2].c_str());
+
+  // cout << " -------- url ---------- \n";
+  // cout << table.size() << '\n';
+  // for (int i = 0; i < table.size(); i++) {
+  //   cout << table[i] << "\n";
+  // }
+  // cout << " ------------------ \n";
+
+  if (table.size() == 1) {
+    // url = (char*)table[0].data();
+    table[0].copy(url, table[0].size(), 0);
+    url[table[0].size()] = '\0';
+    *port = 80;
+  } else if (table.size() == 2) {
+    if (table[0].find("http") != -1) {
+      // url = (char *)table[1].data();
+      table[1].copy(url, table[1].size()-2, 2);
+      url[table[1].size()] = '\0';
+      *port = 80;
+    } else {
+      // url = (char*)table[0].data();
+      table[0].copy(url, table[0].size(), 0);
+      url[table[0].size()] = '\0';
+      *port = atoi(table[1].data());
+    }
+  } else if (table.size() == 3) {
+    // url = (char *)table[1].data();
+    table[1].copy(url, table[1].size()-2, 2);
+    *port = atoi(table[2].data());
   }
 }
 
