@@ -62,7 +62,7 @@
 
 在以下3台服务器环境下，不同的服务器线程数，不同的并发访问量，服务器每秒可以处理HTTP请求数如下图
 
-![syy-throughput](./do cimages/syy-throughput.png)![fengmengyue-throughput](./doc/images/fengmengyue-throughput.png)
+![syy-throughput](./doc/images/syy-throughput.png)![fengmengyue-throughput](./doc/images/fengmengyue-throughput.png)
 
 可以看到在不不断增大的并发访问量下，服务器每秒可以处理HTTP请求数最后趋于一个极限，随着服务器线程数的增加，服务器的处理能力提高，但当并发访问过多时，超出服务器的处理能力也有可能会导致服务器每秒可以处理HTTP请求数下降。并且并发超过一定限度的同时，会导致大量拥塞，从而导致访问超时。由于虚拟机的缘故，服务器每秒可以处理HTTP请求数也有较大差异。
 
@@ -72,7 +72,7 @@
 
 ![throughput](./doc/images/throughput.png)
 
-在高测试并发测试下，当总访问量在500左右时，服务器每秒可以处理HTTP请求数达到最高越1000，但是当访问量继续增大，则造成服务器性能急剧下降。
+在高并发测试下，当总访问量在500左右时，服务器每秒可以处理HTTP请求数达到最高越1000，但是当访问量继续增大，则造成服务器性能急剧下降。
 
 ##### 测试三 代理模式下不同的计算机环境上运行服务器时，不同线程数
 
