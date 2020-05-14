@@ -5,12 +5,12 @@ This is the lab of Cloud Computing 2020. Our team members are Feng Yangyang([@Cy
 
 ## Arrangement
 
-|                 Lab                 | Start | Due  | Code | Report |
-| :---------------------------------: | :---: | :--: | :--: | :----: |
+|                 Lab                 | Start | Due  | Code | Report | Video |
+| :---------------------------------: | :---: | :--: | :--: | :----: | :----: |
 |  Lab1: "Super-fast" Sudoku Solving  | 2/26  | 4/1  |  [Sudoku](Lab1)    |   [Report](Lab1/Report.md)     |
 |     Lab 2: Your Own HTTP Server     | 3/16  | 4/29 |  [HTTP Server](Lab2)    |    [Report](Lab2/README.md)    |
-| Lab3: The First Distributed System  | 3/30  | 5/20 |      |        |
-| Lab4: A "Serious" Web-Retail System | 4/13  | 6/3  |      |        |
+| Lab3: The First Distributed System  | 3/30  | 5/27 |  [A Simple Distributed Key-Value Store](Lab2)    |        |
+| ~~Lab4: A "Serious" Web-Retail System~~ |   |  |      |        |
 
 ## Why is 2019_nCoV_killers?
 
