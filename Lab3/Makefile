@@ -123,6 +123,33 @@ kvstore2pcsystem/fast:
 	$(MAKE) -f CMakeFiles/kvstore2pcsystem.dir/build.make CMakeFiles/kvstore2pcsystem.dir/build
 .PHONY : kvstore2pcsystem/fast
 
+src/kv.o: src/kv.cc.o
+
+.PHONY : src/kv.o
+
+# target to build an object file
+src/kv.cc.o:
+	$(MAKE) -f CMakeFiles/kvstore2pcsystem.dir/build.make CMakeFiles/kvstore2pcsystem.dir/src/kv.cc.o
+.PHONY : src/kv.cc.o
+
+src/kv.i: src/kv.cc.i
+
+.PHONY : src/kv.i
+
+# target to preprocess a source file
+src/kv.cc.i:
+	$(MAKE) -f CMakeFiles/kvstore2pcsystem.dir/build.make CMakeFiles/kvstore2pcsystem.dir/src/kv.cc.i
+.PHONY : src/kv.cc.i
+
+src/kv.s: src/kv.cc.s
+
+.PHONY : src/kv.s
+
+# target to generate assembly for a file
+src/kv.cc.s:
+	$(MAKE) -f CMakeFiles/kvstore2pcsystem.dir/build.make CMakeFiles/kvstore2pcsystem.dir/src/kv.cc.s
+.PHONY : src/kv.cc.s
+
 src/main.o: src/main.cc.o
 
 .PHONY : src/main.o
@@ -177,6 +204,33 @@ src/parser.cc.s:
 	$(MAKE) -f CMakeFiles/kvstore2pcsystem.dir/build.make CMakeFiles/kvstore2pcsystem.dir/src/parser.cc.s
 .PHONY : src/parser.cc.s
 
+src/test/kv_test.o: src/test/kv_test.cc.o
+
+.PHONY : src/test/kv_test.o
+
+# target to build an object file
+src/test/kv_test.cc.o:
+	$(MAKE) -f CMakeFiles/kvstore2pcsystem.dir/build.make CMakeFiles/kvstore2pcsystem.dir/src/test/kv_test.cc.o
+.PHONY : src/test/kv_test.cc.o
+
+src/test/kv_test.i: src/test/kv_test.cc.i
+
+.PHONY : src/test/kv_test.i
+
+# target to preprocess a source file
+src/test/kv_test.cc.i:
+	$(MAKE) -f CMakeFiles/kvstore2pcsystem.dir/build.make CMakeFiles/kvstore2pcsystem.dir/src/test/kv_test.cc.i
+.PHONY : src/test/kv_test.cc.i
+
+src/test/kv_test.s: src/test/kv_test.cc.s
+
+.PHONY : src/test/kv_test.s
+
+# target to generate assembly for a file
+src/test/kv_test.cc.s:
+	$(MAKE) -f CMakeFiles/kvstore2pcsystem.dir/build.make CMakeFiles/kvstore2pcsystem.dir/src/test/kv_test.cc.s
+.PHONY : src/test/kv_test.cc.s
+
 src/test/parser_test.o: src/test/parser_test.cc.o
 
 .PHONY : src/test/parser_test.o
@@ -213,12 +267,18 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... kvstore2pcsystem"
 	@echo "... edit_cache"
+	@echo "... src/kv.o"
+	@echo "... src/kv.i"
+	@echo "... src/kv.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
 	@echo "... src/parser.o"
 	@echo "... src/parser.i"
 	@echo "... src/parser.s"
+	@echo "... src/test/kv_test.o"
+	@echo "... src/test/kv_test.i"
+	@echo "... src/test/kv_test.s"
 	@echo "... src/test/parser_test.o"
 	@echo "... src/test/parser_test.i"
 	@echo "... src/test/parser_test.s"

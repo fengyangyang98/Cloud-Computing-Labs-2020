@@ -41,4 +41,11 @@
 #include <assert.h>
 #include <semaphore.h>
 
+// error
+
+#define KV_OK   0
+#define KV_SET -1
+#define KV_GET -2
+#define KV_DEL -3
+
 #endif
