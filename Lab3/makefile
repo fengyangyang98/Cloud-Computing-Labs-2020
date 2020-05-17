@@ -6,7 +6,7 @@ LIBS =
 
 kvstore2pcsystem : $(OBJS)
 	$(CPP) $(CXXFLAGS) -o $@ $(OBJS) $(LIBS)
-	rm *.o ./src/*.gch 
+	@rm *.o ./src/*.gch 
 
 main.o : main.cpp
 	$(CPP) $(CXXFLAGS) -c $^ $(LIBS)
@@ -17,4 +17,4 @@ read_conf.o : read_conf.hpp read_conf.cpp
 PHONY: clean
 
 clean:
-	rm httpserver.out *.o ./src/*.gch
+	rm -f ./kvstore2pcsystem ./*.o ./src/*.gch
