@@ -5,8 +5,8 @@
 namespace kv_2pc_sys {
 char *conf_url = nullptr;
 Mode mode = Mode::ERR;
-std::vector<Participant> participant;
-std::vector<Coordinator> coordinator;
+std::vector<Node_conf> participant;
+std::vector<Node_conf> coordinator;
 } // namespace kv_2pc_sys
 
 // func
@@ -34,7 +34,7 @@ bool kv_2pc_sys::analysis_conf(string buf) {
       mode = PARTICIPANT;
     }
   } else if (table[0] == "participant_info") {
-    Participant p;
+    Node_conf p;
     string tmp = table[1] + ":";
     string delim = ":";
     std::vector<string> tmp_table;
@@ -48,7 +48,7 @@ bool kv_2pc_sys::analysis_conf(string buf) {
     p.port = atoi(tmp_table[1].c_str());
     participant.push_back(p);
   } else if (table[0] == "coordinator_info") {
-    Coordinator c;
+    Node_conf c;
     string tmp = table[1] + ":";
     string delim = ":";
     std::vector<string> tmp_table;

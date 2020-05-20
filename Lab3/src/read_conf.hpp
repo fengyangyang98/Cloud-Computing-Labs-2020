@@ -1,7 +1,11 @@
 #ifndef READ_CONF_HPP
 #define READ_CONF_HPP
 
-#include "./global.hpp"
+#include <cstring>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
 
 // namespace
 
@@ -10,19 +14,15 @@ using std::string;
 namespace kv_2pc_sys {
 // base type
 enum Mode { ERR = -1, PARTICIPANT = 0, COORDINATOR = 1 };
-struct Participant {
+struct Node_conf {
   string ip;
-  int port;
-};
-struct Coordinator {
-  string ip;
-  int port;
+  unsigned int port;
 };
 
 // var
 extern char *conf_url;
-extern std::vector<Participant> participant;
-extern std::vector<Coordinator> coordinator;
+extern std::vector<Node_conf> participant;
+extern std::vector<Node_conf> coordinator;
 extern Mode mode;
 
 // func

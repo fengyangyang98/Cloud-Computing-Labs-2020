@@ -1,5 +1,5 @@
-#include "global.hpp"
 #include "read_conf.hpp"
+#include "Node.hpp"
 
 using std::cout;
 
