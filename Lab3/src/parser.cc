@@ -3,7 +3,7 @@
         @param raw the raw string you want to warp into the string message
         @return a string message
             e.g. CS06142 -> $7\r\nCS06142\r\n
-    */
+*/
 std::string Parser::getStringMessage(std::string & raw)
 {
     std::string rc = "$";
@@ -29,7 +29,7 @@ std::string Parser::getSuccessMessage()
     */
 std::string Parser::getErrorMessage()
 {
-    std::string rc = "-ERROR\r\n";
+    std::string rc = ".ERROR\r\n";
     return rc;
 }
 
@@ -59,10 +59,22 @@ std::string Parser::getRESPArry(std::vector<std::string> & raw)
     rc += std::to_string(number);
     rc += "\r\n";
     
-    for(auto & s : raw) 
+    for(size_t i = 0; i < raw.size(); i++) 
     {
-        rc += getStringMessage(s);
+        rc += getStringMessage(raw[i]);
     }
+
+    return rc;
+}
+
+std::string Parser::getRESPArry(std::string raw)
+{
+    std::string rc = "*";
+    int number = 1;
+
+    rc += std::to_string(number);
+    rc += "\r\n";
+    rc += getStringMessage(raw);
 
     return rc;
 }
@@ -135,9 +147,8 @@ bool Parser::parserSuccessMessage(char * message, int * length)
         @return the string vector parsered from message
             e.g. Cloud Computing <- *2\r\n$5\r\nCloud\r\n$9\r\nComputing\r\n
     */
-std::vector<std::string> Parser::parserRESPArry(char * message, int * length)
+void Parser::parserRESPArry(char * message, std::vector<std::string> & rc, int * length)
 {
-    std::vector<std::string> rc;
     int number = 0;
     int pos = 0;
 
@@ -155,5 +166,4 @@ std::vector<std::string> Parser::parserRESPArry(char * message, int * length)
     if(length) {
         *length = pos;
     }
-    return rc;
 }
