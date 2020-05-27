@@ -7,7 +7,7 @@ LIB = -lpthread
 
 kvstore2pcsystem : $(OBJS)
 	$(CPP) $(CXXFLAGS) -o $@ $(OBJS) $(LIB) $(INCLUDE)
-	@rm *.o ./src/*.gch 
+	@rm *.o
 
 main.o : main.cc
 	$(CPP) $(CXXFLAGS) -c $^  $(LIB) $(INCLUDE)
