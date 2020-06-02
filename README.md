@@ -22,3 +22,11 @@ As students majoring in computer science in Hunan University now, we cannot be v
 
 
 This time, we are all fighters in this war. We all are 2019_nCoV_killers.
+
+## R.I.P 🕯️
+
+The course has ended, and China's 2019_nCoV has slowly subsided. But other countries are still in dire straits. Thank you to the medical staff on the front line of the real battlefield. They are the real heroes of this battle. Thank you to everyone who contributed to this battle. They are also the heroes of this battle. May the deceased rest in peace, everyone can breathe in the fresh air and bravely embrace everyone around them.
+
+People recorded the battle with [video](https://www.bilibili.com/bangumi/media/md28228968/), and hope that people will not forget it in the years to come.
+
+
